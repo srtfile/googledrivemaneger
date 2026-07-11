@@ -22,8 +22,35 @@ svg{display:block}
 *::-webkit-scrollbar-track{background:transparent}
 *::-webkit-scrollbar-thumb{background:var(--border2);border-radius:3px}
 
+/* ── CLIENT ID SETUP SCREEN ── */
+#clientid-screen{position:fixed;inset:0;background:var(--bg);z-index:999;display:flex;align-items:center;justify-content:center;}
+.clientid-card{background:var(--bg2);border:1px solid var(--border2);border-radius:20px;padding:40px 44px;max-width:500px;width:90%;box-shadow:0 32px 80px rgba(0,0,0,.6);}
+.clientid-logo{display:flex;align-items:center;gap:12px;margin-bottom:28px;}
+.clientid-logo-icon{width:42px;height:42px;border-radius:10px;background:linear-gradient(135deg,var(--accent),var(--cyan));display:flex;align-items:center;justify-content:center;}
+.clientid-logo-text{font-size:22px;font-weight:700;background:linear-gradient(135deg,var(--text),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.clientid-title{font-size:17px;font-weight:700;color:var(--text);margin-bottom:8px;}
+.clientid-sub{font-size:13px;color:var(--text2);margin-bottom:24px;line-height:1.6;}
+.clientid-label{font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px;}
+.clientid-input{width:100%;padding:12px 14px;border-radius:var(--radius);border:1px solid var(--border2);background:var(--card);color:var(--text);font-size:13px;font-family:'JetBrains Mono',monospace;transition:all .2s;margin-bottom:6px;}
+.clientid-input:focus{outline:none;border-color:var(--accent);background:var(--card2);}
+.clientid-input::placeholder{color:var(--text3)}
+.clientid-input.error{border-color:var(--red);}
+.clientid-hint{font-size:11px;color:var(--text3);margin-bottom:20px;line-height:1.5;}
+.clientid-hint a{color:var(--accent2);text-decoration:none;}
+.clientid-hint a:hover{text-decoration:underline}
+.clientid-btn{width:100%;padding:13px 20px;border-radius:var(--radius);border:none;background:linear-gradient(135deg,var(--accent),var(--cyan));color:#fff;cursor:pointer;font-size:14px;font-family:inherit;font-weight:600;display:flex;align-items:center;justify-content:center;gap:8px;transition:all .2s;}
+.clientid-btn:hover{opacity:.9;transform:translateY(-1px)}
+.clientid-btn:disabled{opacity:.5;cursor:not-allowed;transform:none}
+.clientid-steps{margin-bottom:24px;display:flex;flex-direction:column;gap:10px;}
+.clientid-step{display:flex;gap:10px;align-items:flex-start;font-size:12px;color:var(--text2);line-height:1.5;}
+.clientid-step-num{width:20px;height:20px;border-radius:50%;background:rgba(79,110,247,.2);border:1px solid var(--accent);color:var(--accent2);font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;}
+.clientid-step a{color:var(--accent2);text-decoration:none;}
+.clientid-step a:hover{text-decoration:underline}
+.clientid-step code{background:rgba(79,110,247,.12);color:var(--accent2);padding:1px 5px;border-radius:4px;font-family:'JetBrains Mono',monospace;font-size:10px;}
+.clientid-err{font-size:12px;color:var(--red);margin-bottom:12px;display:none;padding:8px 12px;background:rgba(245,54,92,.08);border-radius:8px;border:1px solid rgba(245,54,92,.2);}
+
 /* ── AUTH SCREEN ── */
-#auth-screen{position:fixed;inset:0;background:var(--bg);z-index:999;display:flex;align-items:center;justify-content:center;}
+#auth-screen{position:fixed;inset:0;background:var(--bg);z-index:998;display:none;align-items:center;justify-content:center;}
 .auth-card{background:var(--bg2);border:1px solid var(--border2);border-radius:20px;padding:40px 44px;max-width:480px;width:90%;box-shadow:0 32px 80px rgba(0,0,0,.6);}
 .auth-logo{display:flex;align-items:center;gap:12px;margin-bottom:28px;}
 .auth-logo-icon{width:42px;height:42px;border-radius:10px;background:linear-gradient(135deg,var(--accent),var(--cyan));display:flex;align-items:center;justify-content:center;}
@@ -36,29 +63,9 @@ svg{display:block}
 .btn-google{width:100%;padding:13px 20px;border-radius:var(--radius);border:1px solid var(--border2);background:var(--card);color:var(--text);cursor:pointer;font-size:14px;font-family:inherit;font-weight:600;display:flex;align-items:center;justify-content:center;gap:10px;transition:all .2s;}
 .btn-google:hover{background:var(--card2);border-color:var(--accent)}
 .btn-google:disabled{opacity:.5;cursor:not-allowed}
-.auth-note{font-size:11px;color:var(--text3);margin-top:14px;text-align:center;line-height:1.5;}
-.auth-gsi-loading{font-size:12px;color:var(--text3);text-align:center;margin-top:10px;min-height:18px;}
-
-/* ── SETUP SCREEN ── */
-#setup-screen{position:fixed;inset:0;background:var(--bg);z-index:998;display:none;align-items:center;justify-content:center;overflow-y:auto;}
-.setup-card{background:var(--bg2);border:1px solid var(--border2);border-radius:20px;padding:36px 40px;max-width:580px;width:90%;margin:24px auto;}
-.setup-title{font-size:17px;font-weight:700;color:var(--text);margin-bottom:6px;}
-.setup-sub{font-size:13px;color:var(--text2);margin-bottom:24px;line-height:1.6;}
-.setup-step{display:flex;gap:14px;margin-bottom:18px;align-items:flex-start;}
-.step-num{width:26px;height:26px;border-radius:50%;background:rgba(79,110,247,.2);border:1px solid var(--accent);color:var(--accent2);font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;}
-.step-content{flex:1}
-.step-title{font-size:13px;font-weight:600;color:var(--text);margin-bottom:3px;}
-.step-desc{font-size:12px;color:var(--text2);line-height:1.6;}
-.step-desc a{color:var(--accent2);text-decoration:none;}
-.step-desc a:hover{text-decoration:underline}
-.step-desc code{background:rgba(79,110,247,.12);color:var(--accent2);padding:1px 5px;border-radius:4px;font-family:'JetBrains Mono',monospace;font-size:11px;}
-.setup-input-wrap{margin-top:20px;border-top:1px solid var(--border);padding-top:20px;}
-.setup-label{font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px;}
-.setup-input{width:100%;padding:10px 14px;border-radius:var(--radius);border:1px solid var(--border);background:var(--card);color:var(--text);font-size:13px;font-family:'JetBrains Mono',monospace;}
-.setup-input:focus{outline:none;border-color:var(--accent)}
-.setup-input::placeholder{color:var(--text3)}
-.setup-actions{display:flex;gap:10px;margin-top:14px;}
-.setup-note{font-size:11px;color:var(--text3);margin-top:10px;line-height:1.5;}
+.auth-status{font-size:12px;color:var(--text3);text-align:center;margin-top:12px;min-height:18px;}
+.auth-change-id{font-size:11px;color:var(--accent2);cursor:pointer;text-align:center;margin-top:10px;display:block;}
+.auth-change-id:hover{text-decoration:underline}
 
 /* ── SIDEBAR ── */
 .sidebar{width:var(--sidebar);min-width:var(--sidebar);background:var(--bg2);border-right:1px solid var(--border);display:flex;flex-direction:column;overflow:hidden;}
@@ -288,6 +295,53 @@ svg{display:block}
 <body>
 
 <!-- ═══════════════════════════════════════════════════════
+     CLIENT ID SETUP SCREEN (shown first if no ID saved)
+═══════════════════════════════════════════════════════ -->
+<div id="clientid-screen">
+  <div class="clientid-card">
+    <div class="clientid-logo">
+      <div class="clientid-logo-icon">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+      </div>
+      <div class="clientid-logo-text">DataVault</div>
+    </div>
+    <div class="clientid-title">Enter your Google OAuth Client ID</div>
+    <div class="clientid-sub">This is a one-time setup. Your Client ID is saved in your browser and never leaves your device.</div>
+
+    <div class="clientid-steps">
+      <div class="clientid-step">
+        <div class="clientid-step-num">1</div>
+        <span>Go to <a href="https://console.cloud.google.com/apis/credentials" target="_blank">Google Cloud Console → Credentials</a></span>
+      </div>
+      <div class="clientid-step">
+        <div class="clientid-step-num">2</div>
+        <span>Open your OAuth 2.0 Client ID and add <code>https://srtfile.github.io</code> under <strong>Authorized JavaScript origins</strong></span>
+      </div>
+      <div class="clientid-step">
+        <div class="clientid-step-num">3</div>
+        <span>Copy the Client ID (ends in <code>.apps.googleusercontent.com</code>) and paste below</span>
+      </div>
+      <div class="clientid-step">
+        <div class="clientid-step-num">4</div>
+        <span>Make sure your Google account is added as a <strong>Test user</strong> in the OAuth consent screen</span>
+      </div>
+    </div>
+
+    <div class="clientid-label">Google OAuth Client ID</div>
+    <input class="clientid-input" id="clientid-input" placeholder="xxxxxxxxxx-xxxxxxxxxxxx.apps.googleusercontent.com" autocomplete="off" spellcheck="false" oninput="onClientIdInput()" onkeydown="if(event.key==='Enter')saveAndContinue()">
+    <div class="clientid-err" id="clientid-err"></div>
+    <div class="clientid-hint">
+      Your Client ID looks like: <code>317582455672-abc123.apps.googleusercontent.com</code><br>
+      It is saved in your browser's localStorage — you won't need to enter it again.
+    </div>
+    <button class="clientid-btn" id="clientid-btn" onclick="saveAndContinue()" disabled>
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+      Save & Sign in with Google
+    </button>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════
      AUTH SCREEN
 ═══════════════════════════════════════════════════════ -->
 <div id="auth-screen">
@@ -299,75 +353,19 @@ svg{display:block}
       <div class="auth-logo-text">DataVault</div>
     </div>
     <div class="auth-title">Your files, backed by Google Drive</div>
-    <div class="auth-sub">DataVault stores all your entries, files, and attachments directly in your Google Drive — no third-party servers involved.</div>
+    <div class="auth-sub">DataVault stores all your entries, files, and attachments directly in your Google Drive.</div>
     <div class="auth-features">
       <div class="auth-feat"><div class="auth-feat-dot"></div>All data saved to your personal Google Drive</div>
       <div class="auth-feat"><div class="auth-feat-dot"></div>Files uploaded directly to Drive — nothing stored elsewhere</div>
       <div class="auth-feat"><div class="auth-feat-dot"></div>Syncs across all your devices automatically</div>
       <div class="auth-feat"><div class="auth-feat-dot"></div>You own your data — revoke access any time from Google</div>
     </div>
-    <button class="btn-google" id="sign-in-btn" onclick="startGoogleAuth()" disabled>
+    <button class="btn-google" id="sign-in-btn" onclick="startGoogleAuth()">
       <svg width="18" height="18" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
       Sign in with Google
     </button>
-    <div class="auth-gsi-loading" id="auth-gsi-status">Loading Google Sign-In…</div>
-    <div class="auth-note">You'll be asked to grant <strong>drive.file</strong> scope — DataVault only accesses files it creates, not your whole Drive.</div>
-    <div style="margin-top:16px;text-align:center;">
-      <span style="font-size:11px;color:var(--text3)">First time? </span>
-      <span style="font-size:11px;color:var(--accent2);cursor:pointer;" onclick="showSetup()">OAuth setup guide →</span>
-    </div>
-  </div>
-</div>
-
-<!-- ═══════════════════════════════════════════════════════
-     SETUP SCREEN
-═══════════════════════════════════════════════════════ -->
-<div id="setup-screen">
-  <div class="setup-card">
-    <div class="setup-title">Google OAuth Setup</div>
-    <div class="setup-sub">DataVault needs a Google Cloud OAuth 2.0 Client ID to access Google Drive. This one-time setup takes about 5 minutes.</div>
-
-    <div class="setup-step">
-      <div class="step-num">1</div>
-      <div class="step-content">
-        <div class="step-title">Create a Google Cloud Project</div>
-        <div class="step-desc">Go to <a href="https://console.cloud.google.com" target="_blank">console.cloud.google.com</a>, create a new project, then go to <strong>APIs &amp; Services → Library</strong> and enable the <strong>Google Drive API</strong>.</div>
-      </div>
-    </div>
-
-    <div class="setup-step">
-      <div class="step-num">2</div>
-      <div class="step-content">
-        <div class="step-title">Configure OAuth Consent Screen</div>
-        <div class="step-desc">Go to <strong>APIs &amp; Services → OAuth consent screen</strong>. Set type to <strong>External</strong>, fill in the app name and your email, save. Under <strong>Scopes</strong>, add: <code>https://www.googleapis.com/auth/drive.file</code></div>
-      </div>
-    </div>
-
-    <div class="setup-step">
-      <div class="step-num">3</div>
-      <div class="step-content">
-        <div class="step-title">Create OAuth 2.0 Credentials</div>
-        <div class="step-desc">Go to <strong>Credentials → Create Credentials → OAuth 2.0 Client ID</strong>. Choose <strong>Web application</strong>. Under <strong>Authorized JavaScript origins</strong>, add the URL you're opening this file from (e.g. <code>http://localhost</code> or your HTTPS domain). Copy the <strong>Client ID</strong>.</div>
-      </div>
-    </div>
-
-    <div class="setup-step">
-      <div class="step-num">4</div>
-      <div class="step-content">
-        <div class="step-title">Add Yourself as a Test User</div>
-        <div class="step-desc">Under <strong>OAuth consent screen → Test users</strong>, add your Google account email. This lets you sign in while the app is in "Testing" publishing status.</div>
-      </div>
-    </div>
-
-    <div class="setup-input-wrap">
-      <div class="setup-label">Your Google OAuth Client ID</div>
-      <input class="setup-input" id="setup-client-id" placeholder="123456789-abcdefghij.apps.googleusercontent.com" autocomplete="off" spellcheck="false">
-      <div class="setup-actions">
-        <button class="btn" onclick="hideSetup()">← Back</button>
-        <button class="btn btn-primary" onclick="saveClientId()">Save &amp; Continue →</button>
-      </div>
-      <div class="setup-note">The Client ID is stored in <code>sessionStorage</code> — only for this browser tab. You'll need to re-enter it if you close the tab (or hardcode it below).</div>
-    </div>
+    <div class="auth-status" id="auth-status">Loading Google Sign-In…</div>
+    <a class="auth-change-id" onclick="showClientIdScreen()">⚙ Change Client ID</a>
   </div>
 </div>
 
@@ -381,8 +379,6 @@ svg{display:block}
      MAIN APP
 ═══════════════════════════════════════════════════════ -->
 <div class="app" id="main-app" style="display:none">
-
-  <!-- SIDEBAR -->
   <aside class="sidebar">
     <div class="sidebar-logo">
       <div class="logo-icon">
@@ -393,32 +389,26 @@ svg{display:block}
         <div class="logo-sub">Google Drive</div>
       </div>
     </div>
-
     <div class="drive-status-bar">
       <div class="drive-dot" id="drive-dot"></div>
       <div class="drive-status-text" id="drive-status-text">Connecting…</div>
-      <button class="drive-sync-btn" id="sync-btn" onclick="syncFromDrive()" title="Sync now (S)">
+      <button class="drive-sync-btn" id="sync-btn" onclick="syncFromDrive()" title="Sync (S)">
         <svg id="sync-icon" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15"/></svg>
       </button>
     </div>
-
     <div class="nav-section">Workspace</div>
     <div class="nav-item active" onclick="filterView('all',this)">
       <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
-      All Files
-      <span class="nav-badge" id="all-count">0</span>
+      All Files <span class="nav-badge" id="all-count">0</span>
     </div>
     <div class="nav-item" onclick="filterView('recent',this)">
       <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-      Recent (7d)
-      <span class="nav-badge" id="recent-count" style="background:var(--cyan)">0</span>
+      Recent (7d) <span class="nav-badge" id="recent-count" style="background:var(--cyan)">0</span>
     </div>
     <div class="nav-item" onclick="filterView('starred',this)">
       <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-      Starred
-      <span class="nav-badge" id="star-count" style="background:var(--amber)">0</span>
+      Starred <span class="nav-badge" id="star-count" style="background:var(--amber)">0</span>
     </div>
-
     <div class="nav-section">Categories</div>
     <div class="nav-item" onclick="filterView('website',this)">
       <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"/></svg>
@@ -436,7 +426,6 @@ svg{display:block}
       <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.44 11.05l-9.19 9.19a6 6 0 01-8.49-8.49l9.19-9.19a4 4 0 015.66 5.66l-9.2 9.19a2 2 0 01-2.83-2.83l8.49-8.48"/></svg>
       Attachments
     </div>
-
     <div class="sidebar-spacer"></div>
     <div class="sidebar-footer">
       <div class="avatar" id="user-avatar">DV</div>
@@ -450,15 +439,12 @@ svg{display:block}
     </div>
   </aside>
 
-  <!-- MAIN -->
   <main class="main">
-    <!-- Retry banner -->
     <div class="retry-banner" id="retry-banner">
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
       <span id="retry-msg">Could not connect to Google Drive.</span>
       <button class="retry-btn" onclick="retryInit()">Retry</button>
     </div>
-
     <div class="topbar">
       <div class="breadcrumb">
         <span style="color:var(--text3)">DataVault</span>
@@ -479,13 +465,12 @@ svg{display:block}
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
           </button>
         </div>
-        <button class="btn btn-primary" onclick="openModal()" id="new-entry-btn">
+        <button class="btn btn-primary" onclick="openModal()">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
           New Entry
         </button>
       </div>
     </div>
-
     <div class="filterbar">
       <button class="filter-chip active" onclick="setFilter('all',this)">All types</button>
       <button class="filter-chip" onclick="setFilter('html',this)">.html</button>
@@ -509,7 +494,6 @@ svg{display:block}
       </div>
       <span class="filter-count" id="file-count">0 entries</span>
     </div>
-
     <div class="content-wrap">
       <div class="content" id="main-content">
         <div class="stats-row">
@@ -538,12 +522,10 @@ svg{display:block}
             <div><div class="stat-label">Drive Files</div><div class="stat-val" id="stat-attach">0</div><div class="stat-sub">uploaded</div></div>
           </div>
         </div>
-
         <div class="section-hdr">
           <div class="section-title" id="section-label">All entries</div>
           <span class="section-link" onclick="openModal()">+ Add new</span>
         </div>
-
         <div class="file-grid" id="file-grid"></div>
         <div class="file-list" id="file-list">
           <div class="list-header">
@@ -557,19 +539,17 @@ svg{display:block}
           <div class="empty-sub">Add your first entry with the "New Entry" button, or try a different filter.</div>
         </div>
       </div>
-
-      <!-- DETAIL PANEL -->
       <div class="detail-panel" id="detail-panel">
         <div class="detail-hdr">
           <div id="detail-cat-icon" style="font-size:20px;flex-shrink:0"></div>
           <div class="detail-title" id="detail-title">Entry Detail</div>
-          <button class="detail-close" onclick="closeDetail()" title="Close (Esc)">×</button>
+          <button class="detail-close" onclick="closeDetail()">×</button>
         </div>
         <div class="detail-body" id="detail-body"></div>
         <div class="detail-footer">
           <button class="btn" onclick="editFromDetail()">✏️ Edit</button>
           <button class="btn" id="detail-star-btn" onclick="toggleStarDetail()">☆ Star</button>
-          <button class="btn" onclick="copyEntryJson()" title="Copy all fields as JSON">📋 Copy</button>
+          <button class="btn" onclick="copyEntryJson()">📋 Copy</button>
           <button class="btn" onclick="deleteFromDetail()" style="color:var(--red);border-color:rgba(245,54,92,.3)">🗑 Delete</button>
         </div>
       </div>
@@ -589,40 +569,15 @@ svg{display:block}
     </div>
     <div class="modal-body">
       <div class="form-grid">
-        <div class="form-group full">
-          <label class="form-label">Entry Title <span>*required</span></label>
-          <input class="form-input" id="f-title" placeholder="e.g. AniList Scraper v2">
-        </div>
-        <div class="form-group full">
-          <label class="form-label">Website URL</label>
-          <input class="form-input" id="f-url" type="url" placeholder="https://example.com">
-        </div>
-        <div class="form-group full">
-          <label class="form-label">Captured Data / Description</label>
-          <textarea class="form-textarea" id="f-captured" placeholder="Notes, captured JSON, API response, description…" style="min-height:80px"></textarea>
-        </div>
-        <div class="form-group">
-          <label class="form-label">Working Code / File 1</label>
-          <textarea class="form-textarea" id="f-code1" placeholder="// paste code…"></textarea>
-        </div>
-        <div class="form-group">
-          <label class="form-label">Working Code / File 2</label>
-          <textarea class="form-textarea" id="f-code2" placeholder="// paste code…"></textarea>
-        </div>
-        <div class="form-group">
-          <label class="form-label">Working Code / File 3</label>
-          <textarea class="form-textarea" id="f-code3" placeholder="// paste code…"></textarea>
-        </div>
-        <div class="form-group">
-          <label class="form-label">Important Info 1</label>
-          <textarea class="form-textarea" id="f-info1" placeholder="Key credentials, endpoints…"></textarea>
-        </div>
-        <div class="form-group">
-          <label class="form-label">Important Info 2</label>
-          <textarea class="form-textarea" id="f-info2" placeholder="Secondary info…"></textarea>
-        </div>
-        <div class="form-group">
-          <label class="form-label">Category</label>
+        <div class="form-group full"><label class="form-label">Entry Title <span>*required</span></label><input class="form-input" id="f-title" placeholder="e.g. AniList Scraper v2"></div>
+        <div class="form-group full"><label class="form-label">Website URL</label><input class="form-input" id="f-url" type="url" placeholder="https://example.com"></div>
+        <div class="form-group full"><label class="form-label">Captured Data / Description</label><textarea class="form-textarea" id="f-captured" placeholder="Notes, captured JSON, API response…" style="min-height:80px"></textarea></div>
+        <div class="form-group"><label class="form-label">Working Code / File 1</label><textarea class="form-textarea" id="f-code1" placeholder="// paste code…"></textarea></div>
+        <div class="form-group"><label class="form-label">Working Code / File 2</label><textarea class="form-textarea" id="f-code2" placeholder="// paste code…"></textarea></div>
+        <div class="form-group"><label class="form-label">Working Code / File 3</label><textarea class="form-textarea" id="f-code3" placeholder="// paste code…"></textarea></div>
+        <div class="form-group"><label class="form-label">Important Info 1</label><textarea class="form-textarea" id="f-info1" placeholder="Key credentials, endpoints…"></textarea></div>
+        <div class="form-group"><label class="form-label">Important Info 2</label><textarea class="form-textarea" id="f-info2" placeholder="Secondary info…"></textarea></div>
+        <div class="form-group"><label class="form-label">Category</label>
           <select class="form-select" id="f-category">
             <option value="website">Website Data</option>
             <option value="code">Code File</option>
@@ -630,17 +585,10 @@ svg{display:block}
             <option value="attachment">Attachment</option>
           </select>
         </div>
-        <div class="form-group">
-          <label class="form-label">Date</label>
-          <input class="form-input" id="f-date" type="datetime-local">
-        </div>
+        <div class="form-group"><label class="form-label">Date</label><input class="form-input" id="f-date" type="datetime-local"></div>
         <div class="form-group full">
           <label class="form-label">Attach Files <span>uploaded to Google Drive</span></label>
-          <div class="upload-zone" id="upload-zone"
-               onclick="document.getElementById('file-input').click()"
-               ondragover="onDragOver(event)"
-               ondragleave="onDragLeave(event)"
-               ondrop="onDrop(event)">
+          <div class="upload-zone" id="upload-zone" onclick="document.getElementById('file-input').click()" ondragover="onDragOver(event)" ondragleave="onDragLeave(event)" ondrop="onDrop(event)">
             <div class="upload-icon">☁️</div>
             <div class="upload-text">Drop files here or click to browse</div>
             <div class="upload-sub" id="upload-sub">Files upload directly to your Google Drive</div>
@@ -673,42 +621,30 @@ svg{display:block}
   </div>
 </div>
 
-<!-- TOAST -->
 <div class="toast" id="toast"><div class="toast-dot" id="toast-dot"></div><span id="toast-msg"></span></div>
-
-<!-- KEYBOARD HINT -->
 <div class="kb-hint" id="kb-hint">
-  <span><kbd>N</kbd> New entry</span>
-  <span><kbd>/</kbd> Search</span>
-  <span><kbd>G</kbd> Grid</span>
-  <span><kbd>L</kbd> List</span>
-  <span><kbd>S</kbd> Sync</span>
-  <span><kbd>Esc</kbd> Close</span>
+  <span><kbd>N</kbd> New entry</span><span><kbd>/</kbd> Search</span><span><kbd>G</kbd> Grid</span><span><kbd>L</kbd> List</span><span><kbd>S</kbd> Sync</span><span><kbd>Esc</kbd> Close</span>
 </div>
 
-<!-- GIS loaded asynchronously -->
 <script src="https://accounts.google.com/gsi/client" async defer onload="onGsiLoaded()" onerror="onGsiError()"></script>
-
 <script>
 // ═══════════════════════════════════════════════════════════
-//  CONFIGURATION  ← put your Client ID here to skip setup
+//  CONFIG
 // ═══════════════════════════════════════════════════════════
-let CLIENT_ID = sessionStorage.getItem('dv_client_id') || '';
-// Example: let CLIENT_ID = '123456789-abc.apps.googleusercontent.com';
-
+const STORAGE_KEY   = 'dv_client_id';
 const SCOPES        = 'https://www.googleapis.com/auth/drive.file';
 const DB_FILENAME   = 'datavault_data.json';
 const FOLDER_NAME   = 'DataVault';
 const DRIVE_API     = 'https://www.googleapis.com/drive/v3';
 const UPLOAD_API    = 'https://www.googleapis.com/upload/drive/v3';
-const TOKEN_KEY     = 'dv_token_exp';
 
 // ═══════════════════════════════════════════════════════════
 //  STATE
 // ═══════════════════════════════════════════════════════════
+let CLIENT_ID      = localStorage.getItem(STORAGE_KEY) || '';
 let accessToken    = null;
 let tokenExpiry    = 0;
-let tokenClient    = null;   // GIS token client instance (reusable)
+let tokenClient    = null;
 let entries        = [];
 let dbFileId       = null;
 let folderId       = null;
@@ -725,19 +661,69 @@ let isSyncing      = false;
 let bulkSelected   = new Set();
 
 // ═══════════════════════════════════════════════════════════
-//  GIS INIT
+//  STARTUP — decide which screen to show
+// ═══════════════════════════════════════════════════════════
+document.addEventListener('DOMContentLoaded', () => {
+  if (CLIENT_ID && CLIENT_ID.includes('.apps.googleusercontent.com')) {
+    // Valid ID saved — go straight to auth screen
+    document.getElementById('clientid-screen').style.display = 'none';
+    document.getElementById('auth-screen').style.display = 'flex';
+  } else {
+    // No ID — show setup screen
+    document.getElementById('clientid-screen').style.display = 'flex';
+    document.getElementById('auth-screen').style.display = 'none';
+  }
+});
+
+// ═══════════════════════════════════════════════════════════
+//  CLIENT ID SCREEN
+// ═══════════════════════════════════════════════════════════
+function onClientIdInput() {
+  const val = document.getElementById('clientid-input').value.trim();
+  document.getElementById('clientid-btn').disabled = !val;
+  document.getElementById('clientid-input').classList.remove('error');
+  document.getElementById('clientid-err').style.display = 'none';
+}
+
+function saveAndContinue() {
+  const val = document.getElementById('clientid-input').value.trim();
+  if (!val) return;
+  if (!val.includes('.apps.googleusercontent.com')) {
+    document.getElementById('clientid-input').classList.add('error');
+    const err = document.getElementById('clientid-err');
+    err.textContent = 'That doesn\'t look like a valid Client ID. It should end in .apps.googleusercontent.com';
+    err.style.display = 'block';
+    return;
+  }
+  CLIENT_ID = val;
+  localStorage.setItem(STORAGE_KEY, val);
+  document.getElementById('clientid-screen').style.display = 'none';
+  document.getElementById('auth-screen').style.display = 'flex';
+  // Init token client if GIS already loaded
+  if (window.google) initTokenClient();
+  else document.getElementById('auth-status').textContent = 'Loading Google Sign-In…';
+}
+
+function showClientIdScreen() {
+  document.getElementById('auth-screen').style.display = 'none';
+  document.getElementById('clientid-screen').style.display = 'flex';
+  document.getElementById('clientid-input').value = CLIENT_ID;
+  document.getElementById('clientid-btn').disabled = false;
+}
+
+// ═══════════════════════════════════════════════════════════
+//  GIS
 // ═══════════════════════════════════════════════════════════
 function onGsiLoaded() {
-  document.getElementById('auth-gsi-status').textContent = CLIENT_ID
-    ? 'Google Sign-In ready.'
-    : 'Enter your Client ID below to enable sign-in.';
-  document.getElementById('sign-in-btn').disabled = !CLIENT_ID;
-  if (CLIENT_ID) initTokenClient();
+  if (CLIENT_ID) {
+    initTokenClient();
+  } else {
+    document.getElementById('auth-status').textContent = 'Enter your Client ID to continue.';
+  }
 }
 
 function onGsiError() {
-  document.getElementById('auth-gsi-status').textContent =
-    '⚠ Could not load Google Sign-In. Check your internet connection.';
+  document.getElementById('auth-status').textContent = '⚠ Could not load Google Sign-In. Check your internet connection.';
 }
 
 function initTokenClient() {
@@ -748,44 +734,27 @@ function initTokenClient() {
     callback: handleTokenResponse,
     error_callback: (err) => {
       showToast('Sign-in error: ' + (err.message || err.type || 'unknown'), 'error');
+      document.getElementById('auth-status').textContent = 'Sign-in failed. Check your Client ID and authorized origins.';
     }
   });
-  document.getElementById('sign-in-btn').disabled = false;
-  document.getElementById('auth-gsi-status').textContent = 'Google Sign-In ready.';
-}
-
-// ═══════════════════════════════════════════════════════════
-//  SETUP SCREEN
-// ═══════════════════════════════════════════════════════════
-function showSetup() {
-  document.getElementById('setup-screen').style.display = 'flex';
-  document.getElementById('setup-client-id').value = CLIENT_ID;
-}
-function hideSetup() {
-  document.getElementById('setup-screen').style.display = 'none';
-}
-function saveClientId() {
-  const val = document.getElementById('setup-client-id').value.trim();
-  if (!val) { showToast('Please enter a Client ID', 'error'); return; }
-  CLIENT_ID = val;
-  sessionStorage.setItem('dv_client_id', val);
-  hideSetup();
-  showToast('Client ID saved ✓', 'success');
-  initTokenClient(); // re-init with new ID
+  document.getElementById('auth-status').textContent = 'Ready — click the button above to sign in.';
 }
 
 // ═══════════════════════════════════════════════════════════
 //  AUTH
 // ═══════════════════════════════════════════════════════════
 function startGoogleAuth() {
-  if (!CLIENT_ID) { showSetup(); return; }
-  if (!window.google) { showToast('Google Sign-In not loaded yet', 'error'); return; }
+  if (!CLIENT_ID) { showClientIdScreen(); return; }
+  if (!window.google) { showToast('Google Sign-In not loaded yet, please wait', 'error'); return; }
   if (!tokenClient) initTokenClient();
+  if (!tokenClient) { showToast('Could not initialize Google Sign-In', 'error'); return; }
+  document.getElementById('auth-status').textContent = 'Opening Google sign-in…';
   tokenClient.requestAccessToken({ prompt: '' });
 }
 
 function handleTokenResponse(resp) {
   if (resp.error) {
+    document.getElementById('auth-status').textContent = 'Sign-in failed: ' + resp.error;
     showToast('Sign-in failed: ' + resp.error, 'error');
     return;
   }
@@ -796,10 +765,6 @@ function handleTokenResponse(resp) {
   initDrive();
 }
 
-/**
- * Silently refresh the token if expired, or prompt if needed.
- * Returns a promise that resolves true when a valid token is available.
- */
 function ensureToken() {
   if (accessToken && Date.now() < tokenExpiry) return Promise.resolve(true);
   return new Promise((resolve) => {
@@ -808,11 +773,10 @@ function ensureToken() {
       if (resp.error) { resolve(false); return; }
       accessToken = resp.access_token;
       tokenExpiry  = Date.now() + (resp.expires_in - 60) * 1000;
-      // Restore main callback
       tokenClient.callback = handleTokenResponse;
       resolve(true);
     };
-    tokenClient.requestAccessToken({ prompt: '' }); // '' = no UI if session alive
+    tokenClient.requestAccessToken({ prompt: '' });
   });
 }
 
@@ -826,869 +790,467 @@ function loadUserInfo() {
       document.getElementById('user-avatar').innerHTML = `<img src="${info.picture}" alt="">`;
     } else {
       document.getElementById('user-avatar').textContent =
-        (info.name || 'DV').split(' ').map(w => w[0]).join('').slice(0, 2).toUpperCase();
+        (info.name || 'DV').split(' ').map(w => w[0]).join('').slice(0,2).toUpperCase();
     }
   }).catch(() => {});
 }
 
 function signOut() {
   if (!confirm('Sign out of DataVault?')) return;
-  if (accessToken && window.google) {
-    google.accounts.oauth2.revoke(accessToken, () => {});
-  }
-  accessToken = null; tokenExpiry = 0;
+  if (accessToken && window.google) google.accounts.oauth2.revoke(accessToken, () => {});
+  accessToken = null; tokenExpiry = 0; tokenClient = null;
   entries = []; dbFileId = null; folderId = null;
-  tokenClient = null;
   document.getElementById('main-app').style.display = 'none';
   document.getElementById('auth-screen').style.display = 'flex';
-  document.getElementById('auth-gsi-status').textContent = 'Signed out.';
-  document.getElementById('sign-in-btn').disabled = false;
+  document.getElementById('auth-status').textContent = 'Signed out.';
   showToast('Signed out', 'info');
 }
 
 function showApp() {
   document.getElementById('auth-screen').style.display = 'none';
   document.getElementById('main-app').style.display = 'flex';
-  // Show keyboard hints briefly
   const hint = document.getElementById('kb-hint');
   hint.classList.add('show');
   setTimeout(() => hint.classList.remove('show'), 4000);
 }
 
 // ═══════════════════════════════════════════════════════════
-//  DRIVE API HELPERS
+//  DRIVE API
 // ═══════════════════════════════════════════════════════════
-async function driveRequest(method, path, body = null, params = {}, isUpload = false) {
+async function driveRequest(method, path, body=null, params={}, isUpload=false) {
   const ok = await ensureToken();
   if (!ok) throw new Error('Not authenticated');
   const base = isUpload ? UPLOAD_API : DRIVE_API;
-  const qs = Object.entries(params).map(([k,v]) => `${encodeURIComponent(k)}=${encodeURIComponent(v)}`).join('&');
-  const url = `${base}${path}${qs ? '?' + qs : ''}`;
+  const qs = Object.entries(params).map(([k,v])=>`${encodeURIComponent(k)}=${encodeURIComponent(v)}`).join('&');
+  const url = `${base}${path}${qs?'?'+qs:''}`;
   const headers = { Authorization: 'Bearer ' + accessToken };
   let fetchBody;
-  if (body instanceof FormData || body instanceof Blob) {
-    fetchBody = body;
-  } else if (body) {
-    headers['Content-Type'] = 'application/json';
-    fetchBody = JSON.stringify(body);
-  }
+  if (body instanceof FormData || body instanceof Blob) { fetchBody = body; }
+  else if (body) { headers['Content-Type']='application/json'; fetchBody=JSON.stringify(body); }
   const res = await fetch(url, { method, headers, body: fetchBody });
   if (!res.ok) {
     let msg = `Drive API error ${res.status}`;
-    try { const j = await res.json(); msg = j.error?.message || msg; } catch {}
+    try { const j=await res.json(); msg=j.error?.message||msg; } catch {}
     throw new Error(msg);
   }
-  if (res.status === 204) return null;
+  if (res.status===204) return null;
   return res.json();
 }
+const driveGet    = (p,q)   => driveRequest('GET',p,null,q);
+const drivePost   = (p,b,q) => driveRequest('POST',p,b,q);
+const driveDelete = (p)     => driveRequest('DELETE',p);
 
-const driveGet    = (path, params)       => driveRequest('GET',    path, null, params);
-const drivePost   = (path, body, params) => driveRequest('POST',   path, body, params);
-const drivePatch  = (path, body, params) => driveRequest('PATCH',  path, body, params);
-const driveDelete = (path)               => driveRequest('DELETE', path);
-
-// ═══════════════════════════════════════════════════════════
-//  DRIVE INIT
-// ═══════════════════════════════════════════════════════════
 async function initDrive() {
-  setDriveStatus('syncing', 'Connecting to Drive…');
-  hideBanner();
+  setDriveStatus('syncing','Connecting to Drive…'); hideBanner();
   try {
-    // Find or create DataVault folder
-    const folderRes = await driveGet('/files', {
-      q: `name='${FOLDER_NAME}' and mimeType='application/vnd.google-apps.folder' and trashed=false`,
-      fields: 'files(id,name)'
-    });
-    if (folderRes.files.length > 0) {
-      folderId = folderRes.files[0].id;
-    } else {
-      const f = await drivePost('/files', { name: FOLDER_NAME, mimeType: 'application/vnd.google-apps.folder' });
-      folderId = f.id;
-    }
-
-    // Find or create datavault_data.json
-    const dbRes = await driveGet('/files', {
-      q: `name='${DB_FILENAME}' and '${folderId}' in parents and trashed=false`,
-      fields: 'files(id,name,modifiedTime)'
-    });
-    if (dbRes.files.length > 0) {
-      dbFileId = dbRes.files[0].id;
-      await loadFromDrive();
-    } else {
-      dbFileId = null;
-      entries = [];
-      await saveToDrive();
-    }
-    setDriveStatus('connected', 'Synced with Drive');
-    render();
-  } catch (e) {
-    setDriveStatus('error', 'Drive error');
-    showBanner('Could not connect to Google Drive: ' + e.message);
-  }
+    const folderRes = await driveGet('/files',{q:`name='${FOLDER_NAME}' and mimeType='application/vnd.google-apps.folder' and trashed=false`,fields:'files(id,name)'});
+    if (folderRes.files.length>0) { folderId=folderRes.files[0].id; }
+    else { const f=await drivePost('/files',{name:FOLDER_NAME,mimeType:'application/vnd.google-apps.folder'}); folderId=f.id; }
+    const dbRes = await driveGet('/files',{q:`name='${DB_FILENAME}' and '${folderId}' in parents and trashed=false`,fields:'files(id,name,modifiedTime)'});
+    if (dbRes.files.length>0) { dbFileId=dbRes.files[0].id; await loadFromDrive(); }
+    else { dbFileId=null; entries=[]; await saveToDrive(); }
+    setDriveStatus('connected','Synced with Drive'); render();
+  } catch(e) { setDriveStatus('error','Drive error'); showBanner('Could not connect to Google Drive: '+e.message); }
 }
 
-async function retryInit() {
-  hideBanner();
-  entries = []; dbFileId = null; folderId = null;
-  await initDrive();
-}
+async function retryInit() { hideBanner(); entries=[]; dbFileId=null; folderId=null; await initDrive(); }
 
-// ═══════════════════════════════════════════════════════════
-//  LOAD / SAVE
-// ═══════════════════════════════════════════════════════════
 async function loadFromDrive() {
   if (!dbFileId) return;
-  const ok = await ensureToken();
-  if (!ok) throw new Error('Not authenticated');
-  const res = await fetch(`${DRIVE_API}/files/${dbFileId}?alt=media`, {
-    headers: { Authorization: 'Bearer ' + accessToken }
-  });
-  if (!res.ok) throw new Error('Failed to read DB: ' + res.status);
+  const ok = await ensureToken(); if (!ok) throw new Error('Not authenticated');
+  const res = await fetch(`${DRIVE_API}/files/${dbFileId}?alt=media`,{headers:{Authorization:'Bearer '+accessToken}});
+  if (!res.ok) throw new Error('Failed to read DB: '+res.status);
   const data = await res.json();
   entries = Array.isArray(data.entries) ? data.entries : [];
 }
 
 async function saveToDrive() {
-  const ok = await ensureToken();
-  if (!ok) throw new Error('Not authenticated');
-  const jsonStr = JSON.stringify({ entries, lastSaved: new Date().toISOString() }, null, 2);
-  const blob = new Blob([jsonStr], { type: 'application/json' });
-  const meta = { name: DB_FILENAME, mimeType: 'application/json' };
-  if (!dbFileId && folderId) meta.parents = [folderId];
+  const ok = await ensureToken(); if (!ok) throw new Error('Not authenticated');
+  const jsonStr = JSON.stringify({entries,lastSaved:new Date().toISOString()},null,2);
+  const blob = new Blob([jsonStr],{type:'application/json'});
+  const meta = {name:DB_FILENAME,mimeType:'application/json'};
+  if (!dbFileId && folderId) meta.parents=[folderId];
   const form = new FormData();
-  form.append('metadata', new Blob([JSON.stringify(meta)], { type: 'application/json' }));
-  form.append('file', blob);
-  const method = dbFileId ? 'PATCH' : 'POST';
-  const path   = dbFileId ? `/files/${dbFileId}?uploadType=multipart` : `/files?uploadType=multipart`;
-  const headers = { Authorization: 'Bearer ' + accessToken };
-  const res = await fetch(UPLOAD_API + path, { method, headers, body: form });
-  if (!res.ok) throw new Error('Save failed: ' + res.status);
+  form.append('metadata',new Blob([JSON.stringify(meta)],{type:'application/json'}));
+  form.append('file',blob);
+  const method = dbFileId?'PATCH':'POST';
+  const path   = dbFileId?`/files/${dbFileId}?uploadType=multipart`:`/files?uploadType=multipart`;
+  const res = await fetch(UPLOAD_API+path,{method,headers:{Authorization:'Bearer '+accessToken},body:form});
+  if (!res.ok) throw new Error('Save failed: '+res.status);
   const saved = await res.json();
-  if (!dbFileId) dbFileId = saved.id;
-  setDriveStatus('connected', `Saved · ${new Date().toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'})}`);
+  if (!dbFileId) dbFileId=saved.id;
+  setDriveStatus('connected',`Saved · ${new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})}`);
 }
 
 async function syncFromDrive() {
-  if (!accessToken) { showToast('Not signed in', 'error'); return; }
-  if (isSyncing) return;
-  isSyncing = true;
-  setDriveStatus('syncing', 'Syncing…');
+  if (!accessToken||isSyncing) return;
+  isSyncing=true; setDriveStatus('syncing','Syncing…');
   document.getElementById('sync-icon').classList.add('syncing-spin');
-  document.getElementById('sync-btn').disabled = true;
-  try {
-    await loadFromDrive();
-    setDriveStatus('connected', 'Synced with Drive');
-    render();
-    showToast('Synced from Google Drive ✓', 'success');
-  } catch (e) {
-    setDriveStatus('error', 'Sync failed');
-    showBanner('Sync failed: ' + e.message);
-    showToast('Sync failed', 'error');
-  } finally {
-    document.getElementById('sync-icon').classList.remove('syncing-spin');
-    document.getElementById('sync-btn').disabled = false;
-    isSyncing = false;
-  }
+  document.getElementById('sync-btn').disabled=true;
+  try { await loadFromDrive(); setDriveStatus('connected','Synced with Drive'); render(); showToast('Synced from Google Drive ✓','success'); }
+  catch(e) { setDriveStatus('error','Sync failed'); showBanner('Sync failed: '+e.message); showToast('Sync failed','error'); }
+  finally { document.getElementById('sync-icon').classList.remove('syncing-spin'); document.getElementById('sync-btn').disabled=false; isSyncing=false; }
 }
 
-// ═══════════════════════════════════════════════════════════
-//  FILE UPLOAD / DELETE
-// ═══════════════════════════════════════════════════════════
 async function uploadFileToDrive(file, onProgress) {
-  const ok = await ensureToken();
-  if (!ok) throw new Error('Not authenticated');
-  const meta = { name: file.name, mimeType: file.type || 'application/octet-stream' };
-  if (folderId) meta.parents = [folderId];
+  const ok = await ensureToken(); if (!ok) throw new Error('Not authenticated');
+  const meta = {name:file.name,mimeType:file.type||'application/octet-stream'};
+  if (folderId) meta.parents=[folderId];
   const form = new FormData();
-  form.append('metadata', new Blob([JSON.stringify(meta)], { type: 'application/json' }));
-  form.append('file', file);
-  // Use XMLHttpRequest for progress tracking
-  return new Promise((resolve, reject) => {
+  form.append('metadata',new Blob([JSON.stringify(meta)],{type:'application/json'}));
+  form.append('file',file);
+  return new Promise((resolve,reject) => {
     const xhr = new XMLHttpRequest();
-    xhr.open('POST', `${UPLOAD_API}/files?uploadType=multipart&fields=id,name,webViewLink,webContentLink`);
-    xhr.setRequestHeader('Authorization', 'Bearer ' + accessToken);
-    xhr.upload.addEventListener('progress', (e) => {
-      if (e.lengthComputable && onProgress) onProgress(e.loaded / e.total);
-    });
-    xhr.onload = () => {
-      if (xhr.status >= 200 && xhr.status < 300) {
-        resolve(JSON.parse(xhr.responseText));
-      } else {
-        reject(new Error('Upload failed: ' + xhr.status));
-      }
-    };
+    xhr.open('POST',`${UPLOAD_API}/files?uploadType=multipart&fields=id,name,webViewLink,webContentLink`);
+    xhr.setRequestHeader('Authorization','Bearer '+accessToken);
+    xhr.upload.addEventListener('progress',(e)=>{ if(e.lengthComputable&&onProgress) onProgress(e.loaded/e.total); });
+    xhr.onload = () => { if(xhr.status>=200&&xhr.status<300){resolve(JSON.parse(xhr.responseText));}else{reject(new Error('Upload failed: '+xhr.status));} };
     xhr.onerror = () => reject(new Error('Network error during upload'));
     xhr.send(form);
   });
 }
 
-async function deleteDriveFile(fileId) {
-  try { await driveDelete('/files/' + fileId); } catch (e) { console.warn('Could not delete file:', e); }
-}
+async function deleteDriveFile(fileId) { try{await driveDelete('/files/'+fileId);}catch(e){console.warn('Could not delete:',e);} }
 
 // ═══════════════════════════════════════════════════════════
-//  STATUS BAR / BANNER
+//  STATUS
 // ═══════════════════════════════════════════════════════════
-function setDriveStatus(state, text) {
-  document.getElementById('drive-dot').className = 'drive-dot ' + state;
-  document.getElementById('drive-status-text').textContent = text;
-}
-function showBanner(msg) {
-  document.getElementById('retry-msg').textContent = msg;
-  document.getElementById('retry-banner').classList.add('show');
-}
-function hideBanner() { document.getElementById('retry-banner').classList.remove('show'); }
+function setDriveStatus(state,text){ document.getElementById('drive-dot').className='drive-dot '+state; document.getElementById('drive-status-text').textContent=text; }
+function showBanner(msg){ document.getElementById('retry-msg').textContent=msg; document.getElementById('retry-banner').classList.add('show'); }
+function hideBanner(){ document.getElementById('retry-banner').classList.remove('show'); }
 
 // ═══════════════════════════════════════════════════════════
-//  UTILITIES
+//  UTILS
 // ═══════════════════════════════════════════════════════════
-function uid()    { return Date.now().toString(36) + Math.random().toString(36).slice(2); }
-function esc(s)   { return (s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
-function truncate(s, n) { return s && s.length > n ? s.slice(0, n) + '…' : (s || ''); }
-function fmtSize(b) {
-  if (b < 1024) return b + ' B';
-  if (b < 1048576) return (b / 1024).toFixed(1) + ' KB';
-  return (b / 1048576).toFixed(1) + ' MB';
-}
-function fmt(d) {
-  const dt = new Date(d);
-  return dt.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' })
-       + ' ' + dt.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
+function uid(){ return Date.now().toString(36)+Math.random().toString(36).slice(2); }
+function esc(s){ return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+function truncate(s,n){ return s&&s.length>n?s.slice(0,n)+'…':(s||''); }
+function fmtSize(b){ if(b<1024)return b+' B'; if(b<1048576)return(b/1024).toFixed(1)+' KB'; return(b/1048576).toFixed(1)+' MB'; }
+function fmt(d){ const dt=new Date(d); return dt.toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'})+' '+dt.toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'}); }
+const catIcon={website:{ico:'🌐',bg:'rgba(0,214,138,.12)',col:'#00D68A'},code:{ico:'⚡',bg:'rgba(168,85,247,.12)',col:'#A855F7'},info:{ico:'💡',bg:'rgba(0,200,224,.12)',col:'#00C8E0'},attachment:{ico:'📎',bg:'rgba(245,166,35,.12)',col:'#F5A623'}};
+const extIcons={zip:'🗜️',html:'🌐',htm:'🌐',xlsx:'📊',xls:'📊',doc:'📝',docx:'📝',pdf:'📕',txt:'📄',py:'🐍',js:'📜',ts:'📜',css:'🎨',json:'📋',csv:'📊',png:'🖼️',jpg:'🖼️',jpeg:'🖼️',gif:'🖼️',mp4:'🎬',mp3:'🎵'};
+function extIcon(n){ return extIcons[(n||'').split('.').pop().toLowerCase()]||'📁'; }
+
+function updateStats(){
+  const now=Date.now();
+  document.getElementById('stat-total').textContent=entries.length;
+  document.getElementById('stat-urls').textContent=entries.filter(e=>e.url).length;
+  document.getElementById('stat-code').textContent=entries.filter(e=>e.category==='code').length;
+  document.getElementById('stat-attach').textContent=entries.reduce((a,e)=>a+(e.files||[]).length,0);
+  document.getElementById('all-count').textContent=entries.length;
+  document.getElementById('recent-count').textContent=entries.filter(e=>now-new Date(e.date).getTime()<604800000).length;
+  document.getElementById('star-count').textContent=entries.filter(e=>e.starred).length;
 }
 
-const catIcon = {
-  website:    { ico: '🌐', bg: 'rgba(0,214,138,.12)',  col: '#00D68A' },
-  code:       { ico: '⚡', bg: 'rgba(168,85,247,.12)', col: '#A855F7' },
-  info:       { ico: '💡', bg: 'rgba(0,200,224,.12)',  col: '#00C8E0' },
-  attachment: { ico: '📎', bg: 'rgba(245,166,35,.12)', col: '#F5A623' },
-};
-const extIcons = { zip:'🗜️', html:'🌐', htm:'🌐', xlsx:'📊', xls:'📊', doc:'📝', docx:'📝', pdf:'📕', txt:'📄', py:'🐍', js:'📜', ts:'📜', css:'🎨', json:'📋', csv:'📊', png:'🖼️', jpg:'🖼️', jpeg:'🖼️', gif:'🖼️', mp4:'🎬', mp3:'🎵' };
-function extIcon(n) { return extIcons[(n || '').split('.').pop().toLowerCase()] || '📁'; }
+function onSearch(inp){ document.getElementById('search-clear').style.display=inp.value?'block':'none'; render(); }
+function clearSearch(){ document.getElementById('search-input').value=''; document.getElementById('search-clear').style.display='none'; render(); }
 
-// ═══════════════════════════════════════════════════════════
-//  STATS
-// ═══════════════════════════════════════════════════════════
-function updateStats() {
-  const now = Date.now();
-  document.getElementById('stat-total').textContent  = entries.length;
-  document.getElementById('stat-urls').textContent   = entries.filter(e => e.url).length;
-  document.getElementById('stat-code').textContent   = entries.filter(e => e.category === 'code').length;
-  document.getElementById('stat-attach').textContent = entries.reduce((a, e) => a + (e.files || []).length, 0);
-  document.getElementById('all-count').textContent    = entries.length;
-  document.getElementById('recent-count').textContent = entries.filter(e => now - new Date(e.date).getTime() < 604800000).length;
-  document.getElementById('star-count').textContent   = entries.filter(e => e.starred).length;
-}
-
-// ═══════════════════════════════════════════════════════════
-//  SEARCH
-// ═══════════════════════════════════════════════════════════
-function onSearch(inp) {
-  document.getElementById('search-clear').style.display = inp.value ? 'block' : 'none';
-  render();
-}
-function clearSearch() {
-  document.getElementById('search-input').value = '';
-  document.getElementById('search-clear').style.display = 'none';
-  render();
-}
-
-// ═══════════════════════════════════════════════════════════
-//  FILTER / SORT
-// ═══════════════════════════════════════════════════════════
-function getFiltered() {
-  let list = [...entries];
-  const q = (document.getElementById('search-input') || {}).value || '';
-  if (q.trim()) {
-    const ql = q.toLowerCase().trim();
-    list = list.filter(e =>
-      [e.title, e.url, e.captured, e.info1, e.info2, e.code1, e.code2, e.code3,
-       ...(e.files || []).map(f => f.name)].join(' ').toLowerCase().includes(ql)
-    );
-  }
-  const now = Date.now();
-  if (currentCatFilter === 'starred')  list = list.filter(e => e.starred);
-  else if (currentCatFilter === 'recent') list = list.filter(e => now - new Date(e.date).getTime() < 604800000);
-  else if (currentCatFilter !== 'all') list = list.filter(e => e.category === currentCatFilter);
-  if (currentFileFilter !== 'all') {
-    const ext = currentFileFilter;
-    list = list.filter(e => (e.files || []).some(f => {
-      const fe = f.name.toLowerCase().split('.').pop();
-      return fe === ext || (ext === 'doc' && (fe === 'doc' || fe === 'docx'));
-    }));
-  }
-  const sort = (document.getElementById('sort-sel') || {}).value || 'date-desc';
-  if      (sort === 'date-desc') list.sort((a,b) => new Date(b.date) - new Date(a.date));
-  else if (sort === 'date-asc')  list.sort((a,b) => new Date(a.date) - new Date(b.date));
-  else if (sort === 'name-asc')  list.sort((a,b) => a.title.localeCompare(b.title));
-  else if (sort === 'name-desc') list.sort((a,b) => b.title.localeCompare(a.title));
+function getFiltered(){
+  let list=[...entries];
+  const q=(document.getElementById('search-input')||{}).value||'';
+  if(q.trim()){ const ql=q.toLowerCase().trim(); list=list.filter(e=>[e.title,e.url,e.captured,e.info1,e.info2,e.code1,e.code2,e.code3,...(e.files||[]).map(f=>f.name)].join(' ').toLowerCase().includes(ql)); }
+  const now=Date.now();
+  if(currentCatFilter==='starred') list=list.filter(e=>e.starred);
+  else if(currentCatFilter==='recent') list=list.filter(e=>now-new Date(e.date).getTime()<604800000);
+  else if(currentCatFilter!=='all') list=list.filter(e=>e.category===currentCatFilter);
+  if(currentFileFilter!=='all'){ const ext=currentFileFilter; list=list.filter(e=>(e.files||[]).some(f=>{ const fe=f.name.toLowerCase().split('.').pop(); return fe===ext||(ext==='doc'&&(fe==='doc'||fe==='docx')); })); }
+  const sort=(document.getElementById('sort-sel')||{}).value||'date-desc';
+  if(sort==='date-desc') list.sort((a,b)=>new Date(b.date)-new Date(a.date));
+  else if(sort==='date-asc') list.sort((a,b)=>new Date(a.date)-new Date(b.date));
+  else if(sort==='name-asc') list.sort((a,b)=>a.title.localeCompare(b.title));
+  else if(sort==='name-desc') list.sort((a,b)=>b.title.localeCompare(a.title));
   return list;
 }
 
-// ═══════════════════════════════════════════════════════════
-//  RENDER
-// ═══════════════════════════════════════════════════════════
-function render() {
-  const list = getFiltered();
-  document.getElementById('file-count').textContent = list.length + ' entr' + (list.length === 1 ? 'y' : 'ies');
-  document.getElementById('empty-state').style.display = list.length ? 'none' : 'flex';
-  updateStats();
-  updateBulkUI();
-  renderGrid(list);
-  renderList(list);
+function render(){
+  const list=getFiltered();
+  document.getElementById('file-count').textContent=list.length+' entr'+(list.length===1?'y':'ies');
+  document.getElementById('empty-state').style.display=list.length?'none':'flex';
+  updateStats(); updateBulkUI(); renderGrid(list); renderList(list);
 }
 
-function tagsHTML(e) {
-  const t = [];
-  if (e.url) t.push('<span class="tag tag-url">URL</span>');
-  if (e.code1 || e.code2 || e.code3) t.push('<span class="tag tag-code">Code</span>');
-  if (e.info1 || e.info2) t.push('<span class="tag tag-info">Info</span>');
-  if ((e.files || []).length) t.push(`<span class="tag tag-file">${e.files.length} file${e.files.length > 1 ? 's' : ''}</span>`);
-  if (e.starred) t.push('<span class="tag" style="background:rgba(245,166,35,.1);color:var(--amber);border-color:rgba(245,166,35,.25)">★</span>');
+function tagsHTML(e){
+  const t=[];
+  if(e.url) t.push('<span class="tag tag-url">URL</span>');
+  if(e.code1||e.code2||e.code3) t.push('<span class="tag tag-code">Code</span>');
+  if(e.info1||e.info2) t.push('<span class="tag tag-info">Info</span>');
+  if((e.files||[]).length) t.push(`<span class="tag tag-file">${e.files.length} file${e.files.length>1?'s':''}</span>`);
+  if(e.starred) t.push('<span class="tag" style="background:rgba(245,166,35,.1);color:var(--amber);border-color:rgba(245,166,35,.25)">★</span>');
   return t.join('');
 }
 
-function renderGrid(list) {
-  const g = document.getElementById('file-grid');
-  if (currentView !== 'grid') { g.style.display = 'none'; return; }
-  g.style.display = 'grid';
-  g.innerHTML = list.map(e => {
-    const ci = catIcon[e.category] || catIcon.website;
-    const isBulk = bulkSelected.has(e.id);
-    const files = (e.files || []).slice(0, 2).map(f => {
-      const openFn = f.driveId
-        ? `window.open('https://drive.google.com/file/d/${f.driveId}/view','_blank')`
-        : `showToast('No Drive ID available','warning')`;
-      return `<span class="file-attach" onclick="event.stopPropagation();${openFn}" title="${esc(f.name)}">${extIcon(f.name)} <span>${esc(f.name)}</span></span>`;
+function renderGrid(list){
+  const g=document.getElementById('file-grid');
+  if(currentView!=='grid'){g.style.display='none';return;}
+  g.style.display='grid';
+  g.innerHTML=list.map(e=>{
+    const ci=catIcon[e.category]||catIcon.website;
+    const isBulk=bulkSelected.has(e.id);
+    const files=(e.files||[]).slice(0,2).map(f=>{
+      const openFn=f.driveId?`window.open('https://drive.google.com/file/d/${f.driveId}/view','_blank')`:`showToast('No Drive ID','warning')`;
+      return `<span class="file-attach" onclick="event.stopPropagation();${openFn}">${extIcon(f.name)} <span>${esc(f.name)}</span></span>`;
     }).join('');
-    const more = (e.files || []).length > 2
-      ? `<span class="file-attach" style="cursor:default">+${e.files.length - 2} more</span>` : '';
-    return `<div class="file-card${selectedId === e.id ? ' selected' : ''}${isBulk ? ' bulk-selected' : ''}" id="card-${e.id}" onclick="openDetail('${e.id}')">
-      <div class="card-select" onclick="event.stopPropagation()">
-        <input type="checkbox" ${isBulk ? 'checked' : ''} onchange="toggleBulk('${e.id}',this.checked)" title="Select">
-      </div>
+    const more=(e.files||[]).length>2?`<span class="file-attach" style="cursor:default">+${e.files.length-2} more</span>`:'';
+    return `<div class="file-card${selectedId===e.id?' selected':''}${isBulk?' bulk-selected':''}" onclick="openDetail('${e.id}')">
+      <div class="card-select" onclick="event.stopPropagation()"><input type="checkbox" ${isBulk?'checked':''} onchange="toggleBulk('${e.id}',this.checked)"></div>
       <div class="card-top">
         <div class="file-icon-wrap" style="background:${ci.bg}">${ci.ico}</div>
         <div class="card-meta">
           <div class="card-title" title="${esc(e.title)}">${esc(e.title)}</div>
-          ${e.url ? `<div class="card-url"><a href="${esc(e.url)}" target="_blank" onclick="event.stopPropagation()">${esc(truncate(e.url.replace(/^https?:\/\//, ''), 40))}</a></div>` : ''}
+          ${e.url?`<div class="card-url"><a href="${esc(e.url)}" target="_blank" onclick="event.stopPropagation()">${esc(truncate(e.url.replace(/^https?:\/\//,''),40))}</a></div>`:''}
           <div class="card-date">${fmt(e.date)}</div>
         </div>
         <div class="card-actions">
-          <button class="action-btn" onclick="event.stopPropagation();toggleStar('${e.id}')" title="${e.starred ? 'Unstar' : 'Star'}" style="${e.starred ? 'color:var(--amber)' : ''}">${e.starred ? '★' : '☆'}</button>
-          <button class="action-btn" onclick="event.stopPropagation();editEntry('${e.id}')" title="Edit">
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
-          </button>
-          <button class="action-btn" onclick="event.stopPropagation();confirmDelete('${e.id}')" title="Delete" style="color:var(--red)">
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/><path d="M10 11v6M14 11v6"/></svg>
-          </button>
+          <button class="action-btn" onclick="event.stopPropagation();toggleStar('${e.id}')" style="${e.starred?'color:var(--amber)':''}">${e.starred?'★':'☆'}</button>
+          <button class="action-btn" onclick="event.stopPropagation();editEntry('${e.id}')"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button>
+          <button class="action-btn" onclick="event.stopPropagation();confirmDelete('${e.id}')" style="color:var(--red)"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/></svg></button>
         </div>
       </div>
       <div class="card-fields">
-        ${e.captured ? `<div class="field-row"><span class="field-label">Captured</span><span class="field-val">${esc(truncate(e.captured, 60))}</span></div>` : ''}
-        ${e.code1    ? `<div class="field-row"><span class="field-label">Code 1</span><span class="field-val code">${esc(truncate(e.code1, 50))}</span></div>` : ''}
-        ${e.info1    ? `<div class="field-row"><span class="field-label">Info 1</span><span class="field-val info">${esc(truncate(e.info1, 55))}</span></div>` : ''}
+        ${e.captured?`<div class="field-row"><span class="field-label">Captured</span><span class="field-val">${esc(truncate(e.captured,60))}</span></div>`:''}
+        ${e.code1?`<div class="field-row"><span class="field-label">Code 1</span><span class="field-val code">${esc(truncate(e.code1,50))}</span></div>`:''}
+        ${e.info1?`<div class="field-row"><span class="field-label">Info 1</span><span class="field-val info">${esc(truncate(e.info1,55))}</span></div>`:''}
       </div>
       <div class="card-footer">${tagsHTML(e)}${files}${more}</div>
     </div>`;
   }).join('');
 }
 
-function renderList(list) {
-  const lEl  = document.getElementById('file-list');
-  const rows = document.getElementById('list-rows');
-  if (currentView !== 'list') { lEl.style.display = 'none'; return; }
-  lEl.style.display = 'flex';
-  rows.innerHTML = list.map(e => {
-    const ci = catIcon[e.category] || catIcon.website;
-    const isBulk = bulkSelected.has(e.id);
-    return `<div class="list-row${selectedId === e.id ? ' selected' : ''}${isBulk ? ' bulk-selected' : ''}" onclick="openDetail('${e.id}')">
-      <div class="list-check" onclick="event.stopPropagation()">
-        <input type="checkbox" ${isBulk ? 'checked' : ''} onchange="toggleBulk('${e.id}',this.checked)">
-      </div>
-      <div class="list-name">
-        <span style="font-size:18px;flex-shrink:0">${ci.ico}</span>
+function renderList(list){
+  const lEl=document.getElementById('file-list');
+  const rows=document.getElementById('list-rows');
+  if(currentView!=='list'){lEl.style.display='none';return;}
+  lEl.style.display='flex';
+  rows.innerHTML=list.map(e=>{
+    const ci=catIcon[e.category]||catIcon.website;
+    const isBulk=bulkSelected.has(e.id);
+    return `<div class="list-row${selectedId===e.id?' selected':''}${isBulk?' bulk-selected':''}" onclick="openDetail('${e.id}')">
+      <div class="list-check" onclick="event.stopPropagation()"><input type="checkbox" ${isBulk?'checked':''} onchange="toggleBulk('${e.id}',this.checked)"></div>
+      <div class="list-name"><span style="font-size:18px;flex-shrink:0">${ci.ico}</span>
         <div class="list-name-inner">
           <div style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${esc(e.title)}</div>
-          ${e.url ? `<div class="list-url">${esc(truncate(e.url.replace(/^https?:\/\//, ''), 45))}</div>` : ''}
+          ${e.url?`<div class="list-url">${esc(truncate(e.url.replace(/^https?:\/\//,''),45))}</div>`:''}
         </div>
       </div>
-      <div class="list-captured">${esc(truncate(e.captured, 55))}</div>
+      <div class="list-captured">${esc(truncate(e.captured,55))}</div>
       <div class="list-date">${fmt(e.date)}</div>
       <div class="list-tags">${tagsHTML(e)}</div>
       <div class="list-actions">
-        <button class="action-btn" onclick="event.stopPropagation();toggleStar('${e.id}')" style="${e.starred ? 'color:var(--amber)' : ''}">${e.starred ? '★' : '☆'}</button>
-        <button class="action-btn" onclick="event.stopPropagation();editEntry('${e.id}')">
-          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
-        </button>
-        <button class="action-btn" onclick="event.stopPropagation();confirmDelete('${e.id}')" style="color:var(--red)">
-          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/></svg>
-        </button>
+        <button class="action-btn" onclick="event.stopPropagation();toggleStar('${e.id}')" style="${e.starred?'color:var(--amber)':''}">${e.starred?'★':'☆'}</button>
+        <button class="action-btn" onclick="event.stopPropagation();editEntry('${e.id}')"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button>
+        <button class="action-btn" onclick="event.stopPropagation();confirmDelete('${e.id}')" style="color:var(--red)"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/></svg></button>
       </div>
     </div>`;
   }).join('');
 }
 
 // ═══════════════════════════════════════════════════════════
-//  BULK SELECTION
+//  BULK
 // ═══════════════════════════════════════════════════════════
-function toggleBulk(id, checked) {
-  if (checked) bulkSelected.add(id);
-  else bulkSelected.delete(id);
-  updateBulkUI();
-  render();
+function toggleBulk(id,checked){ if(checked)bulkSelected.add(id); else bulkSelected.delete(id); updateBulkUI(); render(); }
+function updateBulkUI(){
+  const ba=document.getElementById('bulk-actions');
+  const fc=document.getElementById('file-count');
+  if(bulkSelected.size>0){ba.classList.add('show');fc.style.display='none';document.getElementById('bulk-count').textContent=bulkSelected.size+' selected';}
+  else{ba.classList.remove('show');fc.style.display='';}
 }
-function updateBulkUI() {
-  const ba = document.getElementById('bulk-actions');
-  const fc = document.getElementById('file-count');
-  if (bulkSelected.size > 0) {
-    ba.classList.add('show');
-    fc.style.display = 'none';
-    document.getElementById('bulk-count').textContent = bulkSelected.size + ' selected';
-  } else {
-    ba.classList.remove('show');
-    fc.style.display = '';
-  }
-}
-function clearBulk() { bulkSelected.clear(); render(); }
-
-async function bulkStar() {
-  const ids = [...bulkSelected];
-  ids.forEach(id => {
-    const e = entries.find(x => x.id === id);
-    if (e) e.starred = !e.starred;
-  });
-  bulkSelected.clear();
-  try { await saveToDrive(); } catch {}
-  render(); showToast(`Updated ${ids.length} entries`, 'success');
-}
-
-async function bulkDelete() {
-  const ids = [...bulkSelected];
-  const count = ids.length;
-  const driveFileCount = ids.reduce((a, id) => {
-    const e = entries.find(x => x.id === id);
-    return a + ((e?.files || []).filter(f => f.driveId).length);
-  }, 0);
-  const msg = `Delete ${count} entries${driveFileCount ? ' and ' + driveFileCount + ' Drive files' : ''}? This cannot be undone.`;
-  if (!confirm(msg)) return;
+function clearBulk(){ bulkSelected.clear(); render(); }
+async function bulkStar(){ const ids=[...bulkSelected]; ids.forEach(id=>{const e=entries.find(x=>x.id===id);if(e)e.starred=!e.starred;}); bulkSelected.clear(); try{await saveToDrive();}catch{} render(); showToast(`Updated ${ids.length} entries`,'success'); }
+async function bulkDelete(){
+  const ids=[...bulkSelected]; const count=ids.length;
+  if(!confirm(`Delete ${count} entries? This cannot be undone.`)) return;
   closeDetail();
-  for (const id of ids) {
-    const e = entries.find(x => x.id === id);
-    if (!e) continue;
-    for (const f of (e.files || []).filter(f => f.driveId)) await deleteDriveFile(f.driveId);
-    entries = entries.filter(x => x.id !== id);
-  }
-  bulkSelected.clear();
-  try { await saveToDrive(); } catch {}
-  render(); showToast(`Deleted ${count} entries`, 'error');
+  for(const id of ids){ const e=entries.find(x=>x.id===id); if(!e)continue; for(const f of(e.files||[]).filter(f=>f.driveId))await deleteDriveFile(f.driveId); entries=entries.filter(x=>x.id!==id); }
+  bulkSelected.clear(); try{await saveToDrive();}catch{} render(); showToast(`Deleted ${count} entries`,'error');
 }
 
 // ═══════════════════════════════════════════════════════════
 //  DETAIL PANEL
 // ═══════════════════════════════════════════════════════════
-function openDetail(id) {
-  const e = entries.find(x => x.id === id); if (!e) return;
-  detailId = id; selectedId = id;
-  render(); // re-render to show selection highlight
-  const ci = catIcon[e.category] || catIcon.website;
-  document.getElementById('detail-cat-icon').textContent = ci.ico;
-  document.getElementById('detail-title').textContent    = e.title;
-  const sb = document.getElementById('detail-star-btn');
-  sb.textContent  = e.starred ? '★ Unstar' : '☆ Star';
-  sb.style.color  = e.starred ? 'var(--amber)' : '';
-
-  let html = '';
-  if (e.url) {
-    html += `<div class="detail-section">
-      <div class="detail-label">Website URL <span class="detail-copy" onclick="copyText('${esc(e.url)}')">Copy</span></div>
-      <a href="${esc(e.url)}" target="_blank" class="detail-link" rel="noopener">${esc(e.url)}</a>
-    </div>`;
+function openDetail(id){
+  const e=entries.find(x=>x.id===id); if(!e)return;
+  detailId=id; selectedId=id; render();
+  const ci=catIcon[e.category]||catIcon.website;
+  document.getElementById('detail-cat-icon').textContent=ci.ico;
+  document.getElementById('detail-title').textContent=e.title;
+  const sb=document.getElementById('detail-star-btn');
+  sb.textContent=e.starred?'★ Unstar':'☆ Star'; sb.style.color=e.starred?'var(--amber)':'';
+  let html='';
+  if(e.url) html+=`<div class="detail-section"><div class="detail-label">Website URL <span class="detail-copy" onclick="copyText('${esc(e.url)}')">Copy</span></div><a href="${esc(e.url)}" target="_blank" class="detail-link">${esc(e.url)}</a></div>`;
+  if(e.captured) html+=`<div class="detail-section"><div class="detail-label">Captured Data <span class="detail-copy" onclick="copyField('captured')">Copy</span></div><div class="detail-value">${esc(e.captured)}</div></div>`;
+  ['code1','code2','code3'].forEach((k,i)=>{ if(!e[k])return; html+=`<div class="detail-section"><div class="detail-label">Code ${i+1} <span class="detail-copy" onclick="copyField('${k}')">Copy</span></div><div class="detail-value" style="color:var(--accent2)">${esc(e[k])}</div></div>`; });
+  ['info1','info2'].forEach((k,i)=>{ if(!e[k])return; html+=`<div class="detail-section"><div class="detail-label">Info ${i+1} <span class="detail-copy" onclick="copyField('${k}')">Copy</span></div><div class="detail-value" style="color:var(--cyan)">${esc(e[k])}</div></div>`; });
+  if((e.files||[]).length){
+    html+=`<div class="detail-section"><div class="detail-label">Drive Files (${e.files.length})</div><div style="display:flex;flex-direction:column;gap:5px;">`;
+    e.files.forEach(f=>{ html+=`<div class="file-attach" ${f.driveId?`onclick="window.open('https://drive.google.com/file/d/${f.driveId}/view','_blank')"`:''}">${extIcon(f.name)} <span style="flex:1;overflow:hidden;text-overflow:ellipsis">${esc(f.name)}</span><span style="color:var(--text3);flex-shrink:0;margin-left:4px">${esc(f.size)}</span>${f.driveId?`<span style="color:var(--accent2);margin-left:6px;font-size:10px;flex-shrink:0">Open ↗</span>`:''}</div>`; });
+    html+=`</div></div>`;
   }
-  if (e.captured) {
-    html += `<div class="detail-section">
-      <div class="detail-label">Captured Data <span class="detail-copy" onclick="copyField('captured')">Copy</span></div>
-      <div class="detail-value">${esc(e.captured)}</div>
-    </div>`;
-  }
-  ['code1','code2','code3'].forEach((k, i) => {
-    if (!e[k]) return;
-    html += `<div class="detail-section">
-      <div class="detail-label">Code ${i+1} <span class="detail-copy" onclick="copyField('${k}')">Copy</span></div>
-      <div class="detail-value" style="color:var(--accent2)">${esc(e[k])}</div>
-    </div>`;
-  });
-  ['info1','info2'].forEach((k, i) => {
-    if (!e[k]) return;
-    html += `<div class="detail-section">
-      <div class="detail-label">Info ${i+1} <span class="detail-copy" onclick="copyField('${k}')">Copy</span></div>
-      <div class="detail-value" style="color:var(--cyan)">${esc(e[k])}</div>
-    </div>`;
-  });
-  if ((e.files || []).length) {
-    html += `<div class="detail-section">
-      <div class="detail-label">Drive Files (${e.files.length})</div>
-      <div style="display:flex;flex-direction:column;gap:5px;">`;
-    e.files.forEach(f => {
-      const openTarget = f.driveId ? `https://drive.google.com/file/d/${f.driveId}/view` : null;
-      const downloadTarget = f.webContentLink || null;
-      html += `<div class="file-attach" ${openTarget ? `onclick="window.open('${openTarget}','_blank')"` : ''} title="${esc(f.name)}">
-        ${extIcon(f.name)} <span style="flex:1;overflow:hidden;text-overflow:ellipsis">${esc(f.name)}</span>
-        <span style="color:var(--text3);flex-shrink:0;margin-left:4px">${esc(f.size)}</span>
-        ${f.driveId ? `<span style="color:var(--accent2);margin-left:6px;font-size:10px;flex-shrink:0">Open ↗</span>` : ''}
-        ${downloadTarget ? `<span onclick="event.stopPropagation();window.open('${downloadTarget}','_blank')" style="color:var(--green);margin-left:4px;font-size:10px;flex-shrink:0;cursor:pointer">⬇</span>` : ''}
-      </div>`;
-    });
-    html += `</div></div>`;
-  }
-  html += `<div class="detail-section">
-    <div class="detail-label">Date</div>
-    <div style="font-size:12px;color:var(--text3)">${fmt(e.date)}</div>
-  </div>`;
-  html += `<div class="detail-section">
-    <div class="detail-label">Category</div>
-    <div style="font-size:12px;color:var(--text2)">${e.category}</div>
-  </div>`;
-  if (dbFileId) {
-    html += `<div class="detail-section">
-      <div class="detail-label">Source DB</div>
-      <a href="https://drive.google.com/file/d/${dbFileId}/view" target="_blank" class="detail-link" style="font-size:11px" rel="noopener">datavault_data.json ↗</a>
-    </div>`;
-  }
-  document.getElementById('detail-body').innerHTML = html;
+  html+=`<div class="detail-section"><div class="detail-label">Date</div><div style="font-size:12px;color:var(--text3)">${fmt(e.date)}</div></div>`;
+  html+=`<div class="detail-section"><div class="detail-label">Category</div><div style="font-size:12px;color:var(--text2)">${e.category}</div></div>`;
+  document.getElementById('detail-body').innerHTML=html;
   document.getElementById('detail-panel').classList.add('open');
 }
-
-function closeDetail() {
-  document.getElementById('detail-panel').classList.remove('open');
-  detailId = null; selectedId = null;
-  render();
-}
-function editFromDetail()       { if (detailId) editEntry(detailId); }
-function deleteFromDetail()     { if (detailId) confirmDelete(detailId); }
-function toggleStarDetail()     { if (detailId) { toggleStar(detailId); openDetail(detailId); } }
-function copyField(k) {
-  const e = entries.find(x => x.id === detailId);
-  if (e && e[k]) copyText(e[k]);
-}
-function copyText(text) {
-  navigator.clipboard.writeText(text)
-    .then(() => showToast('Copied to clipboard', 'success'))
-    .catch(() => showToast('Copy failed', 'error'));
-}
-function copyEntryJson() {
-  const e = entries.find(x => x.id === detailId);
-  if (!e) return;
-  copyText(JSON.stringify(e, null, 2));
-}
+function closeDetail(){ document.getElementById('detail-panel').classList.remove('open'); detailId=null; selectedId=null; render(); }
+function editFromDetail(){ if(detailId)editEntry(detailId); }
+function deleteFromDetail(){ if(detailId)confirmDelete(detailId); }
+function toggleStarDetail(){ if(detailId){toggleStar(detailId);openDetail(detailId);} }
+function copyField(k){ const e=entries.find(x=>x.id===detailId); if(e&&e[k])copyText(e[k]); }
+function copyText(text){ navigator.clipboard.writeText(text).then(()=>showToast('Copied to clipboard','success')).catch(()=>showToast('Copy failed','error')); }
+function copyEntryJson(){ const e=entries.find(x=>x.id===detailId); if(!e)return; copyText(JSON.stringify(e,null,2)); }
 
 // ═══════════════════════════════════════════════════════════
-//  VIEW / FILTER CONTROLS
+//  VIEW / FILTER
 // ═══════════════════════════════════════════════════════════
-function setView(v, btn) {
-  currentView = v;
-  document.querySelectorAll('.view-btn').forEach(b => b.classList.remove('active'));
-  btn.classList.add('active');
-  render();
-}
-function filterView(filter, el) {
-  currentCatFilter = filter;
-  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-  el.classList.add('active');
-  const labels = { all:'All Files', recent:'Recent (7d)', starred:'Starred', website:'Website Data', code:'Code Files', info:'Important Info', attachment:'Attachments' };
-  document.getElementById('crumb-label').textContent    = labels[filter] || filter;
-  document.getElementById('section-label').textContent  = (labels[filter] || filter) + ' entries';
+function setView(v,btn){ currentView=v; document.querySelectorAll('.view-btn').forEach(b=>b.classList.remove('active')); btn.classList.add('active'); render(); }
+function filterView(filter,el){
+  currentCatFilter=filter;
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active')); el.classList.add('active');
+  const labels={all:'All Files',recent:'Recent (7d)',starred:'Starred',website:'Website Data',code:'Code Files',info:'Important Info',attachment:'Attachments'};
+  document.getElementById('crumb-label').textContent=labels[filter]||filter;
+  document.getElementById('section-label').textContent=(labels[filter]||filter)+' entries';
   closeDetail(); render();
 }
-function setFilter(f, btn) {
-  currentFileFilter = f;
-  document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
-  btn.classList.add('active');
-  render();
-}
+function setFilter(f,btn){ currentFileFilter=f; document.querySelectorAll('.filter-chip').forEach(c=>c.classList.remove('active')); btn.classList.add('active'); render(); }
 
 // ═══════════════════════════════════════════════════════════
-//  MODAL — ADD / EDIT
+//  MODAL
 // ═══════════════════════════════════════════════════════════
-function openModal() {
-  editingId = null; pendingFiles = [];
-  document.getElementById('modal-title').textContent = 'New Entry';
-  ['title','url','captured','code1','code2','code3','info1','info2'].forEach(f => {
-    document.getElementById('f-' + f).value = '';
-    document.getElementById('f-' + f).classList.remove('error');
-  });
-  document.getElementById('f-category').value = 'website';
-  document.getElementById('f-date').value      = new Date().toISOString().slice(0, 16);
-  document.getElementById('attached-files').innerHTML  = '';
-  document.getElementById('upload-progress').innerHTML = '';
-  document.getElementById('upload-sub').textContent    = 'Files upload directly to your Google Drive';
+function openModal(){
+  editingId=null; pendingFiles=[];
+  document.getElementById('modal-title').textContent='New Entry';
+  ['title','url','captured','code1','code2','code3','info1','info2'].forEach(f=>{ document.getElementById('f-'+f).value=''; document.getElementById('f-'+f).classList.remove('error'); });
+  document.getElementById('f-category').value='website';
+  document.getElementById('f-date').value=new Date().toISOString().slice(0,16);
+  document.getElementById('attached-files').innerHTML='';
+  document.getElementById('upload-progress').innerHTML='';
+  document.getElementById('upload-sub').textContent='Files upload directly to your Google Drive';
   document.getElementById('modal').classList.add('open');
-  setTimeout(() => document.getElementById('f-title').focus(), 80);
+  setTimeout(()=>document.getElementById('f-title').focus(),80);
 }
-
-function editEntry(id) {
-  const e = entries.find(x => x.id === id); if (!e) return;
-  editingId    = id;
-  pendingFiles = (e.files || []).map(f => ({ ...f, uploaded: true }));
-  document.getElementById('modal-title').textContent = 'Edit Entry';
-  ['title','url','captured','code1','code2','code3','info1','info2'].forEach(f => {
-    document.getElementById('f-' + f).value = e[f] || '';
-    document.getElementById('f-' + f).classList.remove('error');
-  });
-  document.getElementById('f-category').value = e.category || 'website';
-  document.getElementById('f-date').value      = e.date ? e.date.slice(0, 16) : new Date().toISOString().slice(0, 16);
-  renderAttached();
-  document.getElementById('upload-progress').innerHTML = '';
+function editEntry(id){
+  const e=entries.find(x=>x.id===id); if(!e)return;
+  editingId=id; pendingFiles=(e.files||[]).map(f=>({...f,uploaded:true}));
+  document.getElementById('modal-title').textContent='Edit Entry';
+  ['title','url','captured','code1','code2','code3','info1','info2'].forEach(f=>{ document.getElementById('f-'+f).value=e[f]||''; document.getElementById('f-'+f).classList.remove('error'); });
+  document.getElementById('f-category').value=e.category||'website';
+  document.getElementById('f-date').value=e.date?e.date.slice(0,16):new Date().toISOString().slice(0,16);
+  renderAttached(); document.getElementById('upload-progress').innerHTML='';
   document.getElementById('modal').classList.add('open');
-  setTimeout(() => document.getElementById('f-title').focus(), 80);
+  setTimeout(()=>document.getElementById('f-title').focus(),80);
 }
+function closeModal(){ if(!isSaving){document.getElementById('modal').classList.remove('open'); editingId=null; pendingFiles=[];} }
 
-function closeModal() {
-  if (!isSaving) {
-    document.getElementById('modal').classList.remove('open');
-    editingId = null; pendingFiles = [];
-  }
-}
-
-async function saveEntry() {
-  if (isSaving) return;
-  const titleEl = document.getElementById('f-title');
-  const title   = titleEl.value.trim();
-  if (!title) {
-    titleEl.classList.add('error');
-    titleEl.focus();
-    showToast('Entry title is required', 'error');
-    return;
-  }
+async function saveEntry(){
+  if(isSaving)return;
+  const titleEl=document.getElementById('f-title');
+  const title=titleEl.value.trim();
+  if(!title){titleEl.classList.add('error');titleEl.focus();showToast('Entry title is required','error');return;}
   titleEl.classList.remove('error');
-
-  isSaving = true;
-  const saveBtn = document.getElementById('save-btn');
-  const cancelBtn = document.getElementById('cancel-btn');
-  saveBtn.disabled = true; cancelBtn.disabled = true;
-  setDriveStatus('syncing', 'Saving…');
-
-  const progEl = document.getElementById('upload-progress');
-  progEl.innerHTML = '';
-
+  isSaving=true;
+  const saveBtn=document.getElementById('save-btn');
+  const cancelBtn=document.getElementById('cancel-btn');
+  saveBtn.disabled=true; cancelBtn.disabled=true;
+  setDriveStatus('syncing','Saving…');
+  const progEl=document.getElementById('upload-progress'); progEl.innerHTML='';
   try {
-    // Upload any new files
-    const toUpload = pendingFiles.filter(pf => pf.file && !pf.uploaded);
-    for (let i = 0; i < toUpload.length; i++) {
-      const pf = toUpload[i];
-      // Add progress row
-      const rowId = 'prog-' + pf.name.replace(/\W/g, '_');
-      progEl.insertAdjacentHTML('beforeend', `
-        <div class="progress-item">
-          <span style="flex-shrink:0">${extIcon(pf.name)}</span>
-          <span style="flex:0 0 120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${esc(pf.name)}</span>
-          <div class="progress-bar"><div class="progress-fill" id="${rowId}" style="width:0%"></div></div>
-          <span id="${rowId}-pct" style="flex-shrink:0;min-width:32px;text-align:right">0%</span>
-        </div>`);
-      saveBtn.textContent = `Uploading ${i+1}/${toUpload.length}…`;
-      const result = await uploadFileToDrive(pf.file, (pct) => {
-        const fill = document.getElementById(rowId);
-        const label = document.getElementById(rowId + '-pct');
-        if (fill) fill.style.width = Math.round(pct * 100) + '%';
-        if (label) label.textContent = Math.round(pct * 100) + '%';
-      });
-      pf.driveId       = result.id;
-      pf.webViewLink   = result.webViewLink;
-      pf.webContentLink = result.webContentLink;
-      pf.uploaded = true;
-      delete pf.file;
+    const toUpload=pendingFiles.filter(pf=>pf.file&&!pf.uploaded);
+    for(let i=0;i<toUpload.length;i++){
+      const pf=toUpload[i];
+      const rowId='prog-'+pf.name.replace(/\W/g,'_');
+      progEl.insertAdjacentHTML('beforeend',`<div class="progress-item"><span>${extIcon(pf.name)}</span><span style="flex:0 0 120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${esc(pf.name)}</span><div class="progress-bar"><div class="progress-fill" id="${rowId}" style="width:0%"></div></div><span id="${rowId}-pct" style="flex-shrink:0;min-width:32px;text-align:right">0%</span></div>`);
+      saveBtn.textContent=`Uploading ${i+1}/${toUpload.length}…`;
+      const result=await uploadFileToDrive(pf.file,(pct)=>{ const fill=document.getElementById(rowId); const label=document.getElementById(rowId+'-pct'); if(fill)fill.style.width=Math.round(pct*100)+'%'; if(label)label.textContent=Math.round(pct*100)+'%'; });
+      pf.driveId=result.id; pf.webViewLink=result.webViewLink; pf.webContentLink=result.webContentLink; pf.uploaded=true; delete pf.file;
     }
-
-    saveBtn.textContent = 'Saving to Drive…';
-    const dateVal = document.getElementById('f-date').value;
-    const nowIso  = new Date().toISOString();
-    const e = {
-      id:        editingId || uid(),
-      title,
-      url:       document.getElementById('f-url').value.trim(),
-      captured:  document.getElementById('f-captured').value.trim(),
-      code1:     document.getElementById('f-code1').value.trim(),
-      code2:     document.getElementById('f-code2').value.trim(),
-      code3:     document.getElementById('f-code3').value.trim(),
-      info1:     document.getElementById('f-info1').value.trim(),
-      info2:     document.getElementById('f-info2').value.trim(),
-      category:  document.getElementById('f-category').value,
-      date:      dateVal ? new Date(dateVal).toISOString() : nowIso,
-      files:     pendingFiles.map(f => ({
-        name: f.name, size: f.size,
-        driveId: f.driveId || null,
-        webViewLink: f.webViewLink || null,
-        webContentLink: f.webContentLink || null
-      })),
-      starred: false,
-      createdAt: nowIso,
+    saveBtn.textContent='Saving to Drive…';
+    const dateVal=document.getElementById('f-date').value;
+    const nowIso=new Date().toISOString();
+    const e={
+      id:editingId||uid(),title,
+      url:document.getElementById('f-url').value.trim(),
+      captured:document.getElementById('f-captured').value.trim(),
+      code1:document.getElementById('f-code1').value.trim(),
+      code2:document.getElementById('f-code2').value.trim(),
+      code3:document.getElementById('f-code3').value.trim(),
+      info1:document.getElementById('f-info1').value.trim(),
+      info2:document.getElementById('f-info2').value.trim(),
+      category:document.getElementById('f-category').value,
+      date:dateVal?new Date(dateVal).toISOString():nowIso,
+      files:pendingFiles.map(f=>({name:f.name,size:f.size,driveId:f.driveId||null,webViewLink:f.webViewLink||null,webContentLink:f.webContentLink||null})),
+      starred:false,createdAt:nowIso,
     };
-
-    if (editingId) {
-      const idx = entries.findIndex(x => x.id === editingId);
-      if (idx >= 0) { e.starred = entries[idx].starred; e.createdAt = entries[idx].createdAt || nowIso; entries[idx] = e; }
-      if (detailId === editingId) setTimeout(() => openDetail(editingId), 120);
-    } else {
-      entries.unshift(e);
-    }
-
-    await saveToDrive();
-    render();
+    if(editingId){ const idx=entries.findIndex(x=>x.id===editingId); if(idx>=0){e.starred=entries[idx].starred;e.createdAt=entries[idx].createdAt||nowIso;entries[idx]=e;} if(detailId===editingId)setTimeout(()=>openDetail(editingId),120); }
+    else entries.unshift(e);
+    await saveToDrive(); render();
     document.getElementById('modal').classList.remove('open');
-    showToast(editingId ? 'Entry updated in Drive ✓' : 'Entry saved to Drive ✓', 'success');
-  } catch (err) {
-    showToast('Save failed: ' + err.message, 'error');
-    setDriveStatus('error', 'Save failed');
-  } finally {
-    isSaving = false;
-    saveBtn.disabled = false; cancelBtn.disabled = false;
-    saveBtn.innerHTML = `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg> Save to Drive`;
+    showToast(editingId?'Entry updated in Drive ✓':'Entry saved to Drive ✓','success');
+  } catch(err){ showToast('Save failed: '+err.message,'error'); setDriveStatus('error','Save failed'); }
+  finally {
+    isSaving=false; saveBtn.disabled=false; cancelBtn.disabled=false;
+    saveBtn.innerHTML=`<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg> Save to Drive`;
   }
 }
 
-// ═══════════════════════════════════════════════════════════
-//  FILE SELECT / DRAG & DROP
-// ═══════════════════════════════════════════════════════════
-function handleFileSelect(input) {
-  Array.from(input.files).forEach(f => {
-    if (!pendingFiles.find(p => p.name === f.name))
-      pendingFiles.push({ file: f, name: f.name, size: fmtSize(f.size), driveId: null, uploaded: false });
-  });
-  renderAttached(); input.value = '';
+function handleFileSelect(input){ Array.from(input.files).forEach(f=>{ if(!pendingFiles.find(p=>p.name===f.name)) pendingFiles.push({file:f,name:f.name,size:fmtSize(f.size),driveId:null,uploaded:false}); }); renderAttached(); input.value=''; }
+function onDragOver(e){ e.preventDefault(); document.getElementById('upload-zone').classList.add('drag'); }
+function onDragLeave(){ document.getElementById('upload-zone').classList.remove('drag'); }
+function onDrop(e){ e.preventDefault(); onDragLeave(); Array.from(e.dataTransfer.files).forEach(f=>{ if(!pendingFiles.find(p=>p.name===f.name)) pendingFiles.push({file:f,name:f.name,size:fmtSize(f.size),driveId:null,uploaded:false}); }); renderAttached(); }
+function renderAttached(){
+  const el=document.getElementById('attached-files');
+  el.innerHTML=pendingFiles.map((f,i)=>`<div class="file-attach" style="justify-content:flex-start;padding:6px 10px;cursor:default;">${extIcon(f.name)}<span style="flex:1;overflow:hidden;text-overflow:ellipsis">${esc(f.name)}</span><span style="color:var(--text3);flex-shrink:0;margin-left:4px">${esc(f.size)}</span>${f.driveId?`<a href="https://drive.google.com/file/d/${f.driveId}/view" target="_blank" style="color:var(--green);margin-left:6px;font-size:10px;text-decoration:none;" onclick="event.stopPropagation()">✓ Drive ↗</a>`:f.uploaded?`<span style="color:var(--green);margin-left:6px;font-size:10px">✓</span>`:''}<span onclick="removeFile(${i})" style="cursor:pointer;color:var(--red);margin-left:8px;font-size:16px;line-height:1;flex-shrink:0">×</span></div>`).join('');
+  const newCount=pendingFiles.filter(f=>!f.uploaded).length;
+  document.getElementById('upload-sub').textContent=pendingFiles.length===0?'Files upload directly to your Google Drive':newCount>0?`${newCount} new file(s) will upload · ${pendingFiles.length-newCount} already in Drive`:`${pendingFiles.length} file(s) linked from Google Drive`;
 }
-function onDragOver(e) { e.preventDefault(); document.getElementById('upload-zone').classList.add('drag'); }
-function onDragLeave()  { document.getElementById('upload-zone').classList.remove('drag'); }
-function onDrop(e) {
-  e.preventDefault(); onDragLeave();
-  Array.from(e.dataTransfer.files).forEach(f => {
-    if (!pendingFiles.find(p => p.name === f.name))
-      pendingFiles.push({ file: f, name: f.name, size: fmtSize(f.size), driveId: null, uploaded: false });
-  });
-  renderAttached();
-}
-function renderAttached() {
-  const el = document.getElementById('attached-files');
-  el.innerHTML = pendingFiles.map((f, i) => `
-    <div class="file-attach" style="justify-content:flex-start;padding:6px 10px;cursor:default;">
-      ${extIcon(f.name)}
-      <span style="flex:1;overflow:hidden;text-overflow:ellipsis">${esc(f.name)}</span>
-      <span style="color:var(--text3);flex-shrink:0;margin-left:4px">${esc(f.size)}</span>
-      ${f.driveId
-        ? `<a href="https://drive.google.com/file/d/${f.driveId}/view" target="_blank" style="color:var(--green);margin-left:6px;font-size:10px;text-decoration:none;" onclick="event.stopPropagation()">✓ Drive ↗</a>`
-        : f.uploaded ? `<span style="color:var(--green);margin-left:6px;font-size:10px">✓</span>` : ''}
-      <span onclick="removeFile(${i})" style="cursor:pointer;color:var(--red);margin-left:8px;font-size:16px;line-height:1;flex-shrink:0" title="Remove">×</span>
-    </div>`).join('');
-  const newCount = pendingFiles.filter(f => !f.uploaded).length;
-  const sub = document.getElementById('upload-sub');
-  if (pendingFiles.length === 0) {
-    sub.textContent = 'Files upload directly to your Google Drive';
-  } else if (newCount > 0) {
-    sub.textContent = `${newCount} new file(s) will upload · ${pendingFiles.length - newCount} already in Drive`;
-  } else {
-    sub.textContent = `${pendingFiles.length} file(s) linked from Google Drive`;
-  }
-}
-async function removeFile(i) {
-  const f = pendingFiles[i];
-  if (f.driveId && confirm(`Also delete "${f.name}" from Google Drive?`)) {
-    await deleteDriveFile(f.driveId);
-    // Update entries that reference this file
-    entries.forEach(e => {
-      if (e.files) e.files = e.files.filter(ef => ef.driveId !== f.driveId);
-    });
-    try { await saveToDrive(); } catch {}
-  }
-  pendingFiles.splice(i, 1);
-  renderAttached();
-}
+async function removeFile(i){ const f=pendingFiles[i]; if(f.driveId&&confirm(`Also delete "${f.name}" from Google Drive?`)){ await deleteDriveFile(f.driveId); entries.forEach(e=>{ if(e.files)e.files=e.files.filter(ef=>ef.driveId!==f.driveId); }); try{await saveToDrive();}catch{} } pendingFiles.splice(i,1); renderAttached(); }
 
 // ═══════════════════════════════════════════════════════════
 //  ENTRY ACTIONS
 // ═══════════════════════════════════════════════════════════
-function confirmDelete(id) {
-  const e = entries.find(x => x.id === id); if (!e) return;
-  document.getElementById('confirm-title').textContent = `Delete "${e.title}"?`;
-  const fc = (e.files || []).filter(f => f.driveId).length;
-  document.getElementById('confirm-msg').textContent = fc
-    ? `This entry and ${fc} file${fc > 1 ? 's' : ''} in Google Drive will be permanently deleted. This cannot be undone.`
-    : 'This entry will be permanently removed from your Drive. This cannot be undone.';
-  confirmCallback = async () => {
-    if (detailId === id) closeDetail();
-    for (const f of (e.files || []).filter(f => f.driveId)) await deleteDriveFile(f.driveId);
-    entries = entries.filter(x => x.id !== id);
-    try { await saveToDrive(); } catch (err) { showToast('Deleted locally — Drive sync failed', 'warning'); render(); return; }
-    render(); showToast('Entry deleted from Drive', 'error');
-  };
-  document.getElementById('confirm-ok').onclick = () => { confirmCallback && confirmCallback(); closeConfirm(); };
+function confirmDelete(id){
+  const e=entries.find(x=>x.id===id); if(!e)return;
+  document.getElementById('confirm-title').textContent=`Delete "${e.title}"?`;
+  const fc=(e.files||[]).filter(f=>f.driveId).length;
+  document.getElementById('confirm-msg').textContent=fc?`This entry and ${fc} Drive file${fc>1?'s':''} will be permanently deleted.`:'This entry will be permanently removed from Drive.';
+  confirmCallback=async()=>{ if(detailId===id)closeDetail(); for(const f of(e.files||[]).filter(f=>f.driveId))await deleteDriveFile(f.driveId); entries=entries.filter(x=>x.id!==id); try{await saveToDrive();}catch{showToast('Deleted locally — Drive sync failed','warning');render();return;} render(); showToast('Entry deleted','error'); };
+  document.getElementById('confirm-ok').onclick=()=>{confirmCallback&&confirmCallback();closeConfirm();};
   document.getElementById('confirm-modal').classList.add('open');
 }
-function closeConfirm() {
-  document.getElementById('confirm-modal').classList.remove('open');
-  confirmCallback = null;
-}
+function closeConfirm(){ document.getElementById('confirm-modal').classList.remove('open'); confirmCallback=null; }
 
-async function toggleStar(id) {
-  const e = entries.find(x => x.id === id); if (!e) return;
-  e.starred = !e.starred;
-  render();
-  try { await saveToDrive(); } catch { showToast('Star saved locally — sync failed', 'warning'); return; }
-  showToast(e.starred ? 'Starred ★' : 'Removed from starred', 'info');
-  if (detailId === id) {
-    const sb = document.getElementById('detail-star-btn');
-    sb.textContent = e.starred ? '★ Unstar' : '☆ Star';
-    sb.style.color = e.starred ? 'var(--amber)' : '';
-  }
+async function toggleStar(id){
+  const e=entries.find(x=>x.id===id); if(!e)return;
+  e.starred=!e.starred; render();
+  try{await saveToDrive();}catch{showToast('Star saved locally — sync failed','warning');return;}
+  showToast(e.starred?'Starred ★':'Removed from starred','info');
+  if(detailId===id){ const sb=document.getElementById('detail-star-btn'); sb.textContent=e.starred?'★ Unstar':'☆ Star'; sb.style.color=e.starred?'var(--amber)':''; }
 }
 
 // ═══════════════════════════════════════════════════════════
-//  KEYBOARD SHORTCUTS
+//  KEYBOARD
 // ═══════════════════════════════════════════════════════════
-document.addEventListener('keydown', ev => {
-  const tag = document.activeElement.tagName.toLowerCase();
-  const inInput = ['input','textarea','select'].includes(tag);
-  const modalOpen = document.getElementById('modal').classList.contains('open');
-  const confirmOpen = document.getElementById('confirm-modal').classList.contains('open');
-  const appVisible = document.getElementById('main-app').style.display !== 'none';
-
-  if (ev.key === 'Escape') {
-    if (confirmOpen) { closeConfirm(); return; }
-    if (modalOpen && !isSaving) { closeModal(); return; }
-    if (detailId) { closeDetail(); return; }
-    if (bulkSelected.size > 0) { clearBulk(); return; }
-  }
-  if (!appVisible || inInput || modalOpen || confirmOpen) return;
-
-  switch (ev.key.toLowerCase()) {
-    case 'n': ev.preventDefault(); openModal(); break;
-    case '/': ev.preventDefault(); document.getElementById('search-input').focus(); break;
-    case 'g': setView('grid', document.getElementById('grid-btn')); break;
-    case 'l': setView('list', document.getElementById('list-btn')); break;
-    case 's': syncFromDrive(); break;
-  }
+document.addEventListener('keydown',ev=>{
+  const tag=document.activeElement.tagName.toLowerCase();
+  const inInput=['input','textarea','select'].includes(tag);
+  const modalOpen=document.getElementById('modal').classList.contains('open');
+  const confirmOpen=document.getElementById('confirm-modal').classList.contains('open');
+  const appVisible=document.getElementById('main-app').style.display!=='none';
+  if(ev.key==='Escape'){ if(confirmOpen){closeConfirm();return;} if(modalOpen&&!isSaving){closeModal();return;} if(detailId){closeDetail();return;} if(bulkSelected.size>0){clearBulk();return;} }
+  if(!appVisible||inInput||modalOpen||confirmOpen)return;
+  switch(ev.key.toLowerCase()){ case'n':ev.preventDefault();openModal();break; case'/':ev.preventDefault();document.getElementById('search-input').focus();break; case'g':setView('grid',document.getElementById('grid-btn'));break; case'l':setView('list',document.getElementById('list-btn'));break; case's':syncFromDrive();break; }
 });
 
 // ═══════════════════════════════════════════════════════════
 //  TOAST
 // ═══════════════════════════════════════════════════════════
 let toastTimer;
-function showToast(msg, type = 'success') {
-  const t = document.getElementById('toast');
-  const cols = { success: 'var(--green)', error: 'var(--red)', info: 'var(--accent2)', warning: 'var(--amber)' };
-  document.getElementById('toast-dot').style.background = cols[type] || cols.info;
-  document.getElementById('toast-msg').textContent = msg;
-  t.classList.add('show');
-  clearTimeout(toastTimer);
-  toastTimer = setTimeout(() => t.classList.remove('show'), 3200);
+function showToast(msg,type='success'){
+  const t=document.getElementById('toast');
+  const cols={success:'var(--green)',error:'var(--red)',info:'var(--accent2)',warning:'var(--amber)'};
+  document.getElementById('toast-dot').style.background=cols[type]||cols.info;
+  document.getElementById('toast-msg').textContent=msg;
+  t.classList.add('show'); clearTimeout(toastTimer);
+  toastTimer=setTimeout(()=>t.classList.remove('show'),3200);
 }
-
-// ═══════════════════════════════════════════════════════════
-//  INIT: Pre-fill Client ID field in setup if already stored
-// ═══════════════════════════════════════════════════════════
-document.addEventListener('DOMContentLoaded', () => {
-  if (CLIENT_ID) {
-    document.getElementById('sign-in-btn').disabled = false;
-    // GIS may not be loaded yet — initTokenClient called in onGsiLoaded
-  }
-});
 </script>
 </body>
 </html>
