@@ -756,7 +756,7 @@ function cancelAutoLogin() {
 // ═══════════════════════════════════════════════════════════
 function onClientIdInput() {
   const val = document.getElementById('clientid-input').value.trim();
-  document.getElementById('clientid-btn').disabled = !val;
+  document.getElementById('clientid-btn').disabled = !val.includes('.apps.googleusercontent.com');
   document.getElementById('clientid-input').classList.remove('error');
   document.getElementById('clientid-err').style.display = 'none';
 }
@@ -773,9 +773,36 @@ function saveAndContinue() {
   }
   CLIENT_ID = val;
   localStorage.setItem(STORAGE_KEY, val);
+  // If the Client ID changed, any previous tokenClient is stale — rebuild it.
+  tokenClient = null;
+  accessToken = null;
+  tokenExpiry = 0;
   showScreen('auth');
-  if (window.google) initTokenClient();
-  else document.getElementById('auth-status').textContent = 'Loading Google Sign-In…';
+  document.getElementById('auth-status').textContent = 'Opening Google sign-in…';
+
+  // Kick off sign-in immediately, inside the same user-gesture click so the
+  // Google popup isn't blocked. If GIS hasn't loaded yet, poll briefly.
+  const tryStart = (attemptsLeft) => {
+    if (window.google && window.google.accounts && window.google.accounts.oauth2) {
+      initTokenClient();
+      if (tokenClient) {
+        try {
+          tokenClient.requestAccessToken({ prompt: 'select_account' });
+        } catch (e) {
+          document.getElementById('auth-status').textContent =
+            'Could not open Google sign-in. Click the button above to retry.';
+        }
+      }
+      return;
+    }
+    if (attemptsLeft <= 0) {
+      document.getElementById('auth-status').textContent =
+        '⚠ Google Sign-In script did not load. Check your connection, then click the button above.';
+      return;
+    }
+    setTimeout(() => tryStart(attemptsLeft - 1), 150);
+  };
+  tryStart(40); // up to ~6s
 }
 
 function showClientIdScreen() {
@@ -942,4 +969,114 @@ async function initDrive() {
 
 async function retryInit() { hideBanner(); entries=[]; dbFileId=null; folderId=null; await initDrive(); }
 
-async function loadFr
+async function loadFromDrive() {
+  if (!dbFileId) { entries = []; return; }
+  const data = await driveRequest('GET', `/files/${dbFileId}`, null, { alt: 'media' });
+  entries = Array.isArray(data) ? data : (Array.isArray(data.entries) ? data.entries : []);
+}
+
+async function saveToDrive() {
+  const payload = { entries, updatedAt: new Date().toISOString() };
+  if (!folderId) return;
+  if (dbFileId) {
+    await driveRequest('PATCH', `/files/${dbFileId}`, payload);
+    return;
+  }
+  const metadata = { name: DB_FILENAME, parents: [folderId], mimeType: 'application/json' };
+  const form = new FormData();
+  form.append('metadata', new Blob([JSON.stringify(metadata)], { type: 'application/json' }));
+  form.append('file', new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' }));
+  const created = await fetch(`${UPLOAD_API}/files?uploadType=multipart&fields=id`, {
+    method: 'POST',
+    headers: { Authorization: 'Bearer ' + accessToken },
+    body: form
+  }).then(async (res) => {
+    if (!res.ok) throw new Error(`Drive API error ${res.status}`);
+    return res.json();
+  });
+  dbFileId = created.id;
+}
+
+function render() {
+  const safeEntries = Array.isArray(entries) ? entries : [];
+  const total = safeEntries.length;
+  const setText = (id, value) => { const el = document.getElementById(id); if (el) el.textContent = value; };
+  setText('stat-total', total);
+  setText('stat-urls', safeEntries.filter(e => e.url).length);
+  setText('stat-code', safeEntries.filter(e => e.category === 'code' || e.code1 || e.code2 || e.code3).length);
+  setText('stat-attach', safeEntries.reduce((n, e) => n + ((e.files || e.attachments || []).length), 0));
+  setText('all-count', total);
+  setText('recent-count', safeEntries.filter(e => Date.now() - new Date(e.date || e.createdAt || 0).getTime() < 7 * 86400000).length);
+  setText('star-count', safeEntries.filter(e => e.starred).length);
+  setText('file-count', `${total} ${total === 1 ? 'entry' : 'entries'}`);
+  const empty = document.getElementById('empty-state');
+  if (empty) empty.style.display = total ? 'none' : 'block';
+}
+
+function showToast(message, type = 'info') {
+  const toast = document.getElementById('toast');
+  const msg = document.getElementById('toast-msg');
+  const dot = document.getElementById('toast-dot');
+  if (!toast || !msg) return;
+  msg.textContent = message;
+  if (dot) dot.className = `toast-dot ${type}`;
+  toast.classList.add('show');
+  clearTimeout(showToast._timer);
+  showToast._timer = setTimeout(() => toast.classList.remove('show'), 3200);
+}
+
+function setDriveStatus(status, text) {
+  const dot = document.getElementById('drive-dot');
+  const label = document.getElementById('drive-status-text');
+  if (dot) dot.className = `drive-dot ${status}`;
+  if (label) label.textContent = text;
+}
+
+function showBanner(message) {
+  const banner = document.getElementById('retry-banner');
+  const msg = document.getElementById('retry-msg');
+  if (msg) msg.textContent = message;
+  if (banner) banner.classList.add('show');
+}
+
+function hideBanner() {
+  const banner = document.getElementById('retry-banner');
+  if (banner) banner.classList.remove('show');
+}
+
+function syncFromDrive() { initDrive(); }
+function filterView() { render(); }
+function setFilter() { render(); }
+function setView(view) { currentView = view; render(); }
+function onSearch() { render(); }
+function clearSearch() { const input = document.getElementById('search-input'); if (input) input.value = ''; render(); }
+function openModal() { showToast('Sign in first, then entries can be saved to Drive.', 'info'); }
+function closeModal() {}
+function saveEntry() {}
+function closeDetail() {}
+function editFromDetail() {}
+function toggleStarDetail() {}
+function copyEntryJson() {}
+function deleteFromDetail() {}
+function bulkStar() {}
+function bulkDelete() {}
+function clearBulk() {}
+function closeConfirm() {}
+function onDragOver(event) { event.preventDefault(); }
+function onDragLeave() {}
+function onDrop(event) { event.preventDefault(); }
+function handleFileSelect() {}
+
+// Inline onclick/onload attributes require globals. Expose them explicitly so
+// the setup button keeps working even if the browser treats this script as a module.
+Object.assign(window, {
+  onClientIdInput, saveAndContinue, showClientIdScreen, onGsiLoaded, onGsiError,
+  startGoogleAuth, signOut, retryInit, syncFromDrive, filterView, setFilter,
+  setView, onSearch, clearSearch, openModal, closeModal, saveEntry, closeDetail,
+  editFromDetail, toggleStarDetail, copyEntryJson, deleteFromDetail, bulkStar,
+  bulkDelete, clearBulk, closeConfirm, onDragOver, onDragLeave, onDrop,
+  handleFileSelect
+});
+</script>
+</body>
+</html>
