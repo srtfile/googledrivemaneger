@@ -640,6 +640,7 @@ svg{display:block}
 // ═══════════════════════════════════════════════════════════
 const STORAGE_KEY    = 'dv_client_id';
 const SESSION_KEY    = 'dv_autologin';   // flag: user has signed in before
+const TOKEN_KEY      = 'dv_token';       // cached access token + expiry
 const SCOPES         = 'https://www.googleapis.com/auth/drive.file';
 const DB_FILENAME    = 'datavault_data.json';
 const FOLDER_NAME    = 'DataVault';
@@ -680,6 +681,28 @@ document.addEventListener('DOMContentLoaded', () => {
     showScreen('clientid');
     return;
   }
+
+  // Try to restore a cached, still-valid access token → skip sign-in entirely
+  try {
+    const cached = JSON.parse(localStorage.getItem(TOKEN_KEY) || 'null');
+    if (cached && cached.token && cached.expiry && Date.now() < cached.expiry - 30_000) {
+      accessToken = cached.token;
+      tokenExpiry = cached.expiry;
+      showScreen('autologin');
+      document.getElementById('autologin-text').textContent = 'Loading your Drive…';
+      loadUserInfo();
+      showApp();
+      initDrive();
+      // Init token client in background so silent refresh works when this token expires
+      const waitGis = setInterval(() => {
+        if (window.google && window.google.accounts && window.google.accounts.oauth2) {
+          clearInterval(waitGis);
+          initTokenClient();
+        }
+      }, 200);
+      return;
+    }
+  } catch (_) { /* fall through */ }
 
   const hasSession = localStorage.getItem(SESSION_KEY) === '1';
   if (hasSession) {
@@ -727,6 +750,7 @@ function attemptSilentLogin() {
     }
     accessToken = resp.access_token;
     tokenExpiry  = Date.now() + (resp.expires_in - 60) * 1000;
+    try { localStorage.setItem(TOKEN_KEY, JSON.stringify({ token: accessToken, expiry: tokenExpiry })); } catch(_) {}
     localStorage.setItem(SESSION_KEY, '1');
     document.getElementById('autologin-text').textContent = 'Loading your Drive…';
     loadUserInfo();
@@ -868,6 +892,8 @@ function handleTokenResponse(resp) {
   }
   accessToken = resp.access_token;
   tokenExpiry  = Date.now() + (resp.expires_in - 60) * 1000;
+  // Persist token so returning users skip sign-in until it expires
+  try { localStorage.setItem(TOKEN_KEY, JSON.stringify({ token: accessToken, expiry: tokenExpiry })); } catch(_) {}
   // Mark that this user has signed in — enables auto-login next visit
   localStorage.setItem(SESSION_KEY, '1');
   loadUserInfo();
@@ -885,6 +911,7 @@ function ensureToken() {
       if (resp.error) { resolve(false); return; }
       accessToken = resp.access_token;
       tokenExpiry  = Date.now() + (resp.expires_in - 60) * 1000;
+      try { localStorage.setItem(TOKEN_KEY, JSON.stringify({ token: accessToken, expiry: tokenExpiry })); } catch(_) {}
       resolve(true);
     };
     tokenClient.requestAccessToken({ prompt: '' });
@@ -913,6 +940,7 @@ function signOut() {
   entries = []; dbFileId = null; folderId = null;
   // Clear auto-login flag so next visit doesn't attempt silent auth
   localStorage.removeItem(SESSION_KEY);
+  localStorage.removeItem(TOKEN_KEY);
   showScreen('auth');
   document.getElementById('main-app').style.display = 'none';
   document.getElementById('auth-status').textContent = 'Signed out.';
