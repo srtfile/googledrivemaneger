@@ -5,6 +5,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>DataVault — Google Drive File Manager</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/theme/dracula.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/display/fullscreen.min.css">
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{
@@ -306,6 +309,16 @@ svg{display:block}
 .upload-zone-links{display:flex;gap:14px;justify-content:center;margin-top:8px;}
 .upload-zone-links a{font-size:11px;color:var(--accent2);text-decoration:none;font-weight:600;cursor:pointer;}
 .upload-zone-links a:hover{text-decoration:underline}
+
+/* ── COLORFUL CODE / INFO EDITORS (CodeMirror, VS Code style) ── */
+.dyn-field-hdr{flex-wrap:wrap}
+.dyn-field-label-input{min-width:110px}
+.dyn-mode-select{padding:6px 8px;border-radius:7px;border:1px solid var(--border);background:var(--bg);color:var(--text2);font-size:11px;font-family:inherit;cursor:pointer;flex-shrink:0;}
+.dyn-mode-select:focus{outline:none;border-color:var(--accent)}
+.dyn-field .CodeMirror{border-radius:8px;border:1px solid var(--border);height:180px;font-family:'JetBrains Mono',monospace;font-size:12.5px;line-height:1.55;}
+.dyn-field .CodeMirror-focused{border-color:var(--accent)}
+.dyn-field .CodeMirror-fullscreen{height:100vh!important;width:100vw!important;z-index:1000!important;border-radius:0;}
+.code-preview{margin:0;background:#282a36;border:1px solid var(--border);border-radius:8px;padding:10px;font-family:'JetBrains Mono',monospace;font-size:12px;white-space:pre-wrap;word-break:break-word;max-height:220px;overflow-y:auto;line-height:1.55;}
 </style>
 </head>
 <body>
@@ -656,6 +669,18 @@ svg{display:block}
 </div>
 
 <script src="https://accounts.google.com/gsi/client" async defer onload="onGsiLoaded()" onerror="onGsiError()"></script>
+
+<!-- CodeMirror: powers the colorful, VS Code-style code/info editors -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/javascript/javascript.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/python/python.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/xml/xml.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/htmlmixed/htmlmixed.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/css/css.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/markdown/markdown.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/display/fullscreen.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/runmode/runmode.min.js"></script>
+
 <script>
 // ═══════════════════════════════════════════════════════════
 //  CONFIG
@@ -690,9 +715,29 @@ let isSyncing      = false;
 let bulkSelected   = new Set();
 
 // Dynamic "Working Code / File" and "Important Info" field state used while the modal is open.
-// Each item: { id, label, value }
+// Each item: { id, label, value, mode }
 let codeFields = [];
 let infoFields = [];
+
+// Live CodeMirror editor instances, keyed by field id, while the modal is open.
+let cmCodeInstances = {};
+let cmInfoInstances = {};
+
+// Maps our simple language dropdown values to CodeMirror mode specs.
+const CM_MODES = {
+  javascript: 'javascript',
+  python: 'python',
+  html: 'htmlmixed',
+  css: 'css',
+  json: { name:'javascript', json:true },
+  markdown: 'markdown',
+  plain: null
+};
+function cmModeSpec(modeKey){ return Object.prototype.hasOwnProperty.call(CM_MODES,modeKey) ? CM_MODES[modeKey] : 'javascript'; }
+function modeOptionsHTML(selected){
+  const opts=[['javascript','JavaScript'],['python','Python'],['html','HTML'],['css','CSS'],['json','JSON'],['markdown','Markdown'],['plain','Plain text']];
+  return opts.map(([v,l])=>`<option value="${v}" ${selected===v?'selected':''}>${l}</option>`).join('');
+}
 
 // ═══════════════════════════════════════════════════════════
 //  STARTUP — decide which screen to show
@@ -970,13 +1015,32 @@ function extIcon(n){ return extIcons[(n||'').split('.').pop().toLowerCase()]||'�
 function migrateEntry(e){
   if(!Array.isArray(e.codeFields)){
     e.codeFields=[];
-    ['code1','code2','code3'].forEach((k,i)=>{ if(e[k]) e.codeFields.push({id:uid(),label:'Code File '+(i+1),value:e[k]}); });
+    ['code1','code2','code3'].forEach((k,i)=>{ if(e[k]) e.codeFields.push({id:uid(),label:'Code File '+(i+1),value:e[k],mode:'javascript'}); });
+  } else {
+    e.codeFields.forEach(f=>{ if(!f.mode) f.mode='javascript'; });
   }
   if(!Array.isArray(e.infoFields)){
     e.infoFields=[];
-    ['info1','info2'].forEach((k,i)=>{ if(e[k]) e.infoFields.push({id:uid(),label:'Info '+(i+1),value:e[k]}); });
+    ['info1','info2'].forEach((k,i)=>{ if(e[k]) e.infoFields.push({id:uid(),label:'Info '+(i+1),value:e[k],mode:'markdown'}); });
+  } else {
+    e.infoFields.forEach(f=>{ if(!f.mode) f.mode='markdown'; });
   }
   return e;
+}
+
+// Renders text as VS Code-style colorful HTML (read-only) using CodeMirror's tokenizer.
+function highlightToHTML(text, modeKey){
+  if(!text) return '';
+  if(typeof CodeMirror==='undefined' || !CodeMirror.runMode) return esc(text);
+  const spec = cmModeSpec(modeKey);
+  let html='';
+  try{
+    CodeMirror.runMode(text, spec, (tok, style) => {
+      const cls = style ? 'cm-'+style.split(' ').join(' cm-') : '';
+      html += `<span class="${cls}">${esc(tok)}</span>`;
+    });
+  } catch(e){ return esc(text); }
+  return html || esc(text);
 }
 
 function updateStats(){
@@ -1136,8 +1200,8 @@ function openDetail(id){
   let html='';
   if(e.url) html+=`<div class="detail-section"><div class="detail-label">Website URL <span class="detail-copy" onclick="copyText('${esc(e.url)}')">Copy</span></div><a href="${esc(e.url)}" target="_blank" class="detail-link">${esc(e.url)}</a></div>`;
   if(e.captured) html+=`<div class="detail-section"><div class="detail-label">Captured Data <span class="detail-copy" onclick="copyDetailPlain('captured')">Copy</span></div><div class="detail-value">${esc(e.captured)}</div></div>`;
-  (e.codeFields||[]).forEach(f=>{ if(!f.value)return; html+=`<div class="detail-section"><div class="detail-label">${esc(f.label)} <span class="detail-copy" onclick="copyText(${JSON.stringify(f.value)})">Copy</span></div><div class="detail-value" style="color:var(--accent2)">${esc(f.value)}</div></div>`; });
-  (e.infoFields||[]).forEach(f=>{ if(!f.value)return; html+=`<div class="detail-section"><div class="detail-label">${esc(f.label)} <span class="detail-copy" onclick="copyText(${JSON.stringify(f.value)})">Copy</span></div><div class="detail-value" style="color:var(--cyan)">${esc(f.value)}</div></div>`; });
+  (e.codeFields||[]).forEach(f=>{ if(!f.value)return; html+=`<div class="detail-section"><div class="detail-label">${esc(f.label)} <span class="detail-copy" onclick="copyText(${JSON.stringify(f.value)})">Copy</span></div><pre class="cm-s-dracula code-preview">${highlightToHTML(f.value,f.mode||'javascript')}</pre></div>`; });
+  (e.infoFields||[]).forEach(f=>{ if(!f.value)return; html+=`<div class="detail-section"><div class="detail-label">${esc(f.label)} <span class="detail-copy" onclick="copyText(${JSON.stringify(f.value)})">Copy</span></div><pre class="cm-s-dracula code-preview">${highlightToHTML(f.value,f.mode||'markdown')}</pre></div>`; });
   if((e.files||[]).length){
     html+=`<div class="detail-section"><div class="detail-label">Drive Files (${e.files.length})</div><div style="display:flex;flex-direction:column;gap:5px;">`;
     e.files.forEach(f=>{ html+=`<div class="file-attach" ${f.driveId?`onclick="window.open('https://drive.google.com/file/d/${f.driveId}/view','_blank')"`:''}">${extIcon(f.name)} <span style="flex:1;overflow:hidden;text-overflow:ellipsis">${esc(f.name)}</span><span style="color:var(--text3);flex-shrink:0;margin-left:4px">${esc(f.size)}</span>${f.driveId?`<span style="color:var(--accent2);margin-left:6px;font-size:10px;flex-shrink:0">Open ↗</span>`:''}</div>`; });
@@ -1173,11 +1237,11 @@ function setFilter(f,btn){ currentFileFilter=f; document.querySelectorAll('.filt
 // ═══════════════════════════════════════════════════════════
 //  DYNAMIC CODE / INFO FIELDS
 // ═══════════════════════════════════════════════════════════
-function defaultCodeFields(){ return [1,2,3].map(i=>({id:uid(),label:'Code File '+i,value:''})); }
-function defaultInfoFields(){ return [1,2].map(i=>({id:uid(),label:'Info '+i,value:''})); }
+function defaultCodeFields(){ return [1,2,3].map(i=>({id:uid(),label:'Code File '+i,value:'',mode:'javascript'})); }
+function defaultInfoFields(){ return [1,2].map(i=>({id:uid(),label:'Info '+i,value:'',mode:'markdown'})); }
 
-function addCodeField(){ codeFields.push({id:uid(),label:'Code File '+(codeFields.length+1),value:''}); renderCodeFields(); }
-function addInfoField(){ infoFields.push({id:uid(),label:'Info '+(infoFields.length+1),value:''}); renderInfoFields(); }
+function addCodeField(){ codeFields.push({id:uid(),label:'Code File '+(codeFields.length+1),value:'',mode:'javascript'}); renderCodeFields(); }
+function addInfoField(){ infoFields.push({id:uid(),label:'Info '+(infoFields.length+1),value:'',mode:'markdown'}); renderInfoFields(); }
 
 function removeDynField(type,id){
   const arr = type==='code'?codeFields:infoFields;
@@ -1191,6 +1255,14 @@ function updateFieldLabel(type,id,val){
   const f = arr.find(f=>f.id===id);
   if(f) f.label=val;
 }
+function updateFieldMode(type,id,val){
+  const arr = type==='code'?codeFields:infoFields;
+  const f = arr.find(f=>f.id===id);
+  if(f) f.mode=val;
+  const store = type==='code'?cmCodeInstances:cmInfoInstances;
+  const cm = store[id];
+  if(cm) cm.setOption('mode', cmModeSpec(val));
+}
 function syncDynValue(type,id,val){
   const arr = type==='code'?codeFields:infoFields;
   const f = arr.find(f=>f.id===id);
@@ -1198,28 +1270,71 @@ function syncDynValue(type,id,val){
 }
 function copyDynField(type,id){
   const arr = type==='code'?codeFields:infoFields;
-  const f = arr.find(f=>f.id===id);
-  if(f && f.value) copyText(f.value);
+  const f = arr.find(x=>x.id===id);
+  const store = type==='code'?cmCodeInstances:cmInfoInstances;
+  const cm = store[id];
+  const val = cm ? cm.getValue() : (f?f.value:'');
+  if(val) copyText(val);
   else showToast('Nothing to copy yet','warning');
+}
+function toggleFullscreenCM(type,id){
+  const store = type==='code'?cmCodeInstances:cmInfoInstances;
+  const cm = store[id];
+  if(!cm) return;
+  cm.setOption('fullScreen', !cm.getOption('fullScreen'));
+  setTimeout(()=>cm.refresh(),60);
 }
 
 function dynFieldRow(type,f){
   return `<div class="dyn-field" data-id="${f.id}">
     <div class="dyn-field-hdr">
       <input class="dyn-field-label-input" value="${esc(f.label)}" placeholder="Field name" oninput="updateFieldLabel('${type}','${f.id}',this.value)">
+      <select class="dyn-mode-select" title="Syntax highlighting" onchange="updateFieldMode('${type}','${f.id}',this.value)">${modeOptionsHTML(f.mode||(type==='code'?'javascript':'markdown'))}</select>
+      <button type="button" class="dyn-icon-btn" title="Maximize / restore" onclick="toggleFullscreenCM('${type}','${f.id}')">⛶</button>
       <button type="button" class="dyn-icon-btn" title="Copy" onclick="copyDynField('${type}','${f.id}')">📋</button>
       <button type="button" class="dyn-icon-btn danger" title="Remove field" onclick="removeDynField('${type}','${f.id}')">🗑</button>
     </div>
-    <textarea class="form-textarea" placeholder="${type==='code'?'// paste code…':'Key info, credentials, endpoints…'}" oninput="syncDynValue('${type}','${f.id}',this.value)">${esc(f.value)}</textarea>
+    <textarea class="cm-target" placeholder="${type==='code'?'// paste code…':'Key info, credentials, endpoints…'}">${esc(f.value)}</textarea>
   </div>`;
 }
-function renderCodeFields(){ document.getElementById('code-fields-container').innerHTML = codeFields.map(f=>dynFieldRow('code',f)).join(''); }
-function renderInfoFields(){ document.getElementById('info-fields-container').innerHTML = infoFields.map(f=>dynFieldRow('info',f)).join(''); }
+
+function initCMField(type,f,store){
+  const wrap = document.querySelector(`.dyn-field[data-id="${f.id}"]`);
+  const ta = wrap ? wrap.querySelector('textarea.cm-target') : null;
+  if(!ta || typeof CodeMirror==='undefined') return;
+  const cm = CodeMirror.fromTextArea(ta, {
+    mode: cmModeSpec(f.mode),
+    theme: 'dracula',
+    lineNumbers: true,
+    lineWrapping: true,
+    tabSize: 2,
+    extraKeys: { Esc: cmInst => { if(cmInst.getOption('fullScreen')) cmInst.setOption('fullScreen', false); } }
+  });
+  cm.on('change', instance => syncDynValue(type, f.id, instance.getValue()));
+  store[f.id] = cm;
+  setTimeout(()=>cm.refresh(), 60);
+}
+function destroyCMStore(store){
+  Object.keys(store).forEach(id=>{ try{ store[id].toTextArea(); }catch(e){} delete store[id]; });
+}
+function destroyAllModalCM(){ destroyCMStore(cmCodeInstances); destroyCMStore(cmInfoInstances); }
+
+function renderCodeFields(){
+  destroyCMStore(cmCodeInstances);
+  document.getElementById('code-fields-container').innerHTML = codeFields.map(f=>dynFieldRow('code',f)).join('');
+  codeFields.forEach(f=>initCMField('code',f,cmCodeInstances));
+}
+function renderInfoFields(){
+  destroyCMStore(cmInfoInstances);
+  document.getElementById('info-fields-container').innerHTML = infoFields.map(f=>dynFieldRow('info',f)).join('');
+  infoFields.forEach(f=>initCMField('info',f,cmInfoInstances));
+}
 
 // ═══════════════════════════════════════════════════════════
 //  MODAL
 // ═══════════════════════════════════════════════════════════
 function openModal(){
+  destroyAllModalCM();
   editingId=null; pendingFiles=[];
   codeFields = defaultCodeFields();
   infoFields = defaultInfoFields();
@@ -1227,16 +1342,17 @@ function openModal(){
   ['title','url','captured'].forEach(f=>{ document.getElementById('f-'+f).value=''; document.getElementById('f-'+f).classList.remove('error'); });
   document.getElementById('f-category').value='website';
   document.getElementById('f-date').value=new Date().toISOString().slice(0,16);
-  renderCodeFields(); renderInfoFields();
   document.getElementById('attached-files').innerHTML='';
   document.getElementById('upload-progress').innerHTML='';
   document.getElementById('upload-sub').textContent='Files upload directly to your Google Drive';
   document.getElementById('modal').classList.add('open');
+  renderCodeFields(); renderInfoFields(); // rendered after the modal is visible so CodeMirror sizes correctly
   setTimeout(()=>document.getElementById('f-title').focus(),80);
 }
 function editEntry(id){
   const e=entries.find(x=>x.id===id); if(!e)return;
   migrateEntry(e);
+  destroyAllModalCM();
   editingId=id; pendingFiles=(e.files||[]).map(f=>({...f,uploaded:true}));
   codeFields = (e.codeFields&&e.codeFields.length? e.codeFields : defaultCodeFields()).map(f=>({...f}));
   infoFields = (e.infoFields&&e.infoFields.length? e.infoFields : defaultInfoFields()).map(f=>({...f}));
@@ -1244,12 +1360,12 @@ function editEntry(id){
   ['title','url','captured'].forEach(f=>{ document.getElementById('f-'+f).value=e[f]||''; document.getElementById('f-'+f).classList.remove('error'); });
   document.getElementById('f-category').value=e.category||'website';
   document.getElementById('f-date').value=e.date?e.date.slice(0,16):new Date().toISOString().slice(0,16);
-  renderCodeFields(); renderInfoFields();
   renderAttached(); document.getElementById('upload-progress').innerHTML='';
   document.getElementById('modal').classList.add('open');
+  renderCodeFields(); renderInfoFields(); // rendered after the modal is visible so CodeMirror sizes correctly
   setTimeout(()=>document.getElementById('f-title').focus(),80);
 }
-function closeModal(){ if(!isSaving){document.getElementById('modal').classList.remove('open'); editingId=null; pendingFiles=[]; codeFields=[]; infoFields=[];} }
+function closeModal(){ if(!isSaving){document.getElementById('modal').classList.remove('open'); destroyAllModalCM(); editingId=null; pendingFiles=[]; codeFields=[]; infoFields=[];} }
 
 async function saveEntry(){
   if(isSaving)return;
