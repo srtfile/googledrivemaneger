@@ -319,6 +319,16 @@ svg{display:block}
 .dyn-field .CodeMirror-focused{border-color:var(--accent)}
 .dyn-field .CodeMirror-fullscreen{height:100vh!important;width:100vw!important;z-index:1000!important;border-radius:0;}
 .code-preview{margin:0;background:#282a36;border:1px solid var(--border);border-radius:8px;padding:10px;font-family:'JetBrains Mono',monospace;font-size:12px;white-space:pre-wrap;word-break:break-word;max-height:220px;overflow-y:auto;line-height:1.55;}
+
+/* ── FULLSCREEN FIELD TOOLBAR (Minimize / Copy / Save) ── */
+.cm-fullscreen-toolbar{position:fixed;top:14px;right:18px;z-index:1002;display:flex;gap:8px;background:var(--bg2);border:1px solid var(--border2);border-radius:10px;padding:6px;box-shadow:0 12px 32px rgba(0,0,0,.5);}
+.cm-fs-btn{padding:7px 12px;border-radius:7px;border:1px solid var(--border);background:var(--card);color:var(--text2);cursor:pointer;font-size:12px;font-family:'Inter',sans-serif;font-weight:600;display:flex;align-items:center;gap:5px;transition:all .15s;}
+.cm-fs-btn:hover{background:var(--card2);color:var(--text);border-color:var(--accent)}
+.cm-fs-btn.primary{background:var(--accent);border-color:var(--accent);color:#fff}
+.cm-fs-btn.primary:hover{background:var(--accent2);border-color:var(--accent2)}
+
+/* ── GOOGLE DRIVE QUICK-OPEN ── */
+.drive-status-bar .drive-sync-btn svg{display:block}
 </style>
 </head>
 <body>
@@ -421,6 +431,9 @@ svg{display:block}
     <div class="drive-status-bar">
       <div class="drive-dot" id="drive-dot"></div>
       <div class="drive-status-text" id="drive-status-text">Connecting…</div>
+      <button class="drive-sync-btn" onclick="openDriveFolder()" title="Open in Google Drive">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+      </button>
       <button class="drive-sync-btn" id="sync-btn" onclick="syncFromDrive()" title="Sync (S)">
         <svg id="sync-icon" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15"/></svg>
       </button>
@@ -518,6 +531,7 @@ svg{display:block}
       <div class="bulk-actions" id="bulk-actions">
         <span id="bulk-count" style="font-size:12px;color:var(--text2)">0 selected</span>
         <button class="btn" onclick="bulkStar()">☆ Star all</button>
+        <button class="btn" onclick="bulkDownloadZip()">⬇ Download selected</button>
         <button class="btn btn-danger" onclick="bulkDelete()">🗑 Delete selected</button>
         <button class="btn" onclick="clearBulk()">✕ Cancel</button>
       </div>
@@ -579,6 +593,7 @@ svg{display:block}
           <button class="btn" onclick="editFromDetail()">✏️ Edit</button>
           <button class="btn" id="detail-star-btn" onclick="toggleStarDetail()">☆ Star</button>
           <button class="btn" onclick="copyEntryJson()">📋 Copy</button>
+          <button class="btn" onclick="downloadEntryZip(detailId)">⬇ Download</button>
           <button class="btn" onclick="deleteFromDetail()" style="color:var(--red);border-color:rgba(245,54,92,.3)">🗑 Delete</button>
         </div>
       </div>
@@ -603,13 +618,13 @@ svg{display:block}
         <div class="form-group full"><label class="form-label">Captured Data / Description</label><textarea class="form-textarea" id="f-captured" placeholder="Notes, captured JSON, API response…" style="min-height:80px"></textarea></div>
 
         <div class="form-group full">
-          <label class="form-label">Working Code / Files <span>rename, add, or copy any field</span></label>
+          <label class="form-label">Working Code / Files <span>rename, add, upload, or copy any field</span></label>
           <div class="dyn-wrap" id="code-fields-container"></div>
           <div class="dyn-add-row"><button type="button" class="dyn-add-btn" onclick="addCodeField()">+ Add another code file</button></div>
         </div>
 
         <div class="form-group full">
-          <label class="form-label">Important Info <span>rename, add, or copy any field</span></label>
+          <label class="form-label">Important Info <span>rename, add, upload, or copy any field</span></label>
           <div class="dyn-wrap" id="info-fields-container"></div>
           <div class="dyn-add-row"><button type="button" class="dyn-add-btn" onclick="addInfoField()">+ Add another info field</button></div>
         </div>
@@ -680,12 +695,16 @@ svg{display:block}
 <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/markdown/markdown.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/display/fullscreen.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/runmode/runmode.min.js"></script>
+<!-- JSZip: powers the "Download as ZIP" feature for entries and attachments -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 
 <script>
 // ═══════════════════════════════════════════════════════════
 //  CONFIG
 // ═══════════════════════════════════════════════════════════
 const STORAGE_KEY   = 'dv_client_id';
+const CACHE_KEY     = 'dv_entries_cache';
+const CACHE_TTL_MS  = 5 * 60 * 60 * 1000; // 5 hours — local cache speeds up load/edit before Drive round-trip finishes
 const SCOPES        = 'https://www.googleapis.com/auth/drive.file';
 const DB_FILENAME   = 'datavault_data.json';
 const FOLDER_NAME   = 'DataVault';
@@ -737,6 +756,17 @@ function cmModeSpec(modeKey){ return Object.prototype.hasOwnProperty.call(CM_MOD
 function modeOptionsHTML(selected){
   const opts=[['javascript','JavaScript'],['python','Python'],['html','HTML'],['css','CSS'],['json','JSON'],['markdown','Markdown'],['plain','Plain text']];
   return opts.map(([v,l])=>`<option value="${v}" ${selected===v?'selected':''}>${l}</option>`).join('');
+}
+// Guesses a highlighting mode from an uploaded file's name/extension.
+function guessModeFromFilename(name){
+  const ext=(name||'').split('.').pop().toLowerCase();
+  const map={js:'javascript',jsx:'javascript',mjs:'javascript',cjs:'javascript',ts:'javascript',tsx:'javascript',py:'python',html:'html',htm:'html',css:'css',json:'json',md:'markdown',markdown:'markdown'};
+  return map[ext]||'plain';
+}
+// Maps a mode key to a sensible file extension when exporting a field to a file.
+function extForMode(modeKey){
+  const map={javascript:'.js',python:'.py',html:'.html',css:'.css',json:'.json',markdown:'.md',plain:'.txt'};
+  return map[modeKey]||'.txt';
 }
 
 // ═══════════════════════════════════════════════════════════
@@ -841,6 +871,17 @@ function handleTokenResponse(resp) {
   tokenExpiry  = Date.now() + (resp.expires_in - 60) * 1000;
   loadUserInfo();
   showApp();
+
+  // Speed strategy: show cached entries instantly (if fresh, <5h old) while the real
+  // Drive sync runs quietly in the background. Makes the app feel instant on reopen.
+  const cached = loadCachedEntries();
+  if (cached) {
+    entries = (cached.entries || []).map(migrateEntry);
+    folderId = cached.folderId || null;
+    dbFileId = cached.dbFileId || null;
+    setDriveStatus('connected', 'Loaded from cache — syncing…');
+    render();
+  }
   initDrive();
 }
 
@@ -879,6 +920,7 @@ function signOut() {
   if (accessToken && window.google) google.accounts.oauth2.revoke(accessToken, () => {});
   accessToken = null; tokenExpiry = 0; tokenClient = null;
   entries = []; dbFileId = null; folderId = null;
+  clearEntriesCache();
   document.getElementById('main-app').style.display = 'none';
   document.getElementById('auth-screen').style.display = 'flex';
   document.getElementById('auth-status').textContent = 'Signed out.';
@@ -892,6 +934,26 @@ function showApp() {
   hint.classList.add('show');
   setTimeout(() => hint.classList.remove('show'), 4000);
 }
+
+// ═══════════════════════════════════════════════════════════
+//  LOCAL CACHE (5-hour TTL) — speeds up load/edit by avoiding a
+//  blocking round-trip to Drive every time the app opens.
+// ═══════════════════════════════════════════════════════════
+function cacheEntries(){
+  try {
+    localStorage.setItem(CACHE_KEY, JSON.stringify({ entries, folderId, dbFileId, ts: Date.now() }));
+  } catch(e) { /* storage full or unavailable — silently skip caching */ }
+}
+function loadCachedEntries(){
+  try {
+    const raw = localStorage.getItem(CACHE_KEY);
+    if (!raw) return null;
+    const obj = JSON.parse(raw);
+    if (!obj || !obj.ts || (Date.now() - obj.ts) > CACHE_TTL_MS) return null;
+    return obj;
+  } catch(e) { return null; }
+}
+function clearEntriesCache(){ try { localStorage.removeItem(CACHE_KEY); } catch(e){} }
 
 // ═══════════════════════════════════════════════════════════
 //  DRIVE API
@@ -929,6 +991,7 @@ async function initDrive() {
     if (dbRes.files.length>0) { dbFileId=dbRes.files[0].id; await loadFromDrive(); }
     else { dbFileId=null; entries=[]; await saveToDrive(); }
     setDriveStatus('connected','Synced with Drive'); render();
+    cacheEntries();
   } catch(e) { setDriveStatus('error','Drive error'); showBanner('Could not connect to Google Drive: '+e.message); }
 }
 
@@ -942,6 +1005,7 @@ async function loadFromDrive() {
   const data = await res.json();
   entries = Array.isArray(data.entries) ? data.entries : [];
   entries.forEach(migrateEntry);
+  cacheEntries();
 }
 
 async function saveToDrive() {
@@ -960,6 +1024,7 @@ async function saveToDrive() {
   const saved = await res.json();
   if (!dbFileId) dbFileId=saved.id;
   setDriveStatus('connected',`Saved · ${new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})}`);
+  cacheEntries();
 }
 
 async function syncFromDrive() {
@@ -992,12 +1057,24 @@ async function uploadFileToDrive(file, onProgress) {
 
 async function deleteDriveFile(fileId) { try{await driveDelete('/files/'+fileId);}catch(e){console.warn('Could not delete:',e);} }
 
+// Downloads the raw bytes of a Drive file as a Blob (used for ZIP export and direct download).
+async function fetchDriveFileBlob(fileId) {
+  const ok = await ensureToken(); if (!ok) throw new Error('Not authenticated');
+  const res = await fetch(`${DRIVE_API}/files/${fileId}?alt=media`,{headers:{Authorization:'Bearer '+accessToken}});
+  if (!res.ok) throw new Error('Download failed: '+res.status);
+  return res.blob();
+}
+
 // ═══════════════════════════════════════════════════════════
 //  STATUS
 // ═══════════════════════════════════════════════════════════
 function setDriveStatus(state,text){ document.getElementById('drive-dot').className='drive-dot '+state; document.getElementById('drive-status-text').textContent=text; }
 function showBanner(msg){ document.getElementById('retry-msg').textContent=msg; document.getElementById('retry-banner').classList.add('show'); }
 function hideBanner(){ document.getElementById('retry-banner').classList.remove('show'); }
+function openDriveFolder(){
+  const url = folderId ? `https://drive.google.com/drive/folders/${folderId}` : 'https://drive.google.com/drive/';
+  window.open(url, '_blank');
+}
 
 // ═══════════════════════════════════════════════════════════
 //  UTILS
@@ -1007,6 +1084,14 @@ function esc(s){ return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').repla
 function truncate(s,n){ return s&&s.length>n?s.slice(0,n)+'…':(s||''); }
 function fmtSize(b){ if(b<1024)return b+' B'; if(b<1048576)return(b/1024).toFixed(1)+' KB'; return(b/1048576).toFixed(1)+' MB'; }
 function fmt(d){ const dt=new Date(d); return dt.toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'})+' '+dt.toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'}); }
+function sanitizeFileName(s){ return (s||'file').replace(/[\\/:*?"<>|]/g,'_').trim().slice(0,80) || 'file'; }
+function triggerBlobDownload(blob,filename){
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = filename;
+  document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(()=>URL.revokeObjectURL(url), 4000);
+}
 const catIcon={website:{ico:'🌐',bg:'rgba(0,214,138,.12)',col:'#00D68A'},code:{ico:'⚡',bg:'rgba(168,85,247,.12)',col:'#A855F7'},info:{ico:'💡',bg:'rgba(0,200,224,.12)',col:'#00C8E0'},attachment:{ico:'📎',bg:'rgba(245,166,35,.12)',col:'#F5A623'}};
 const extIcons={zip:'🗜️',html:'🌐',htm:'🌐',xlsx:'📊',xls:'📊',doc:'📝',docx:'📝',pdf:'📕',txt:'📄',py:'🐍',js:'📜',ts:'📜',css:'🎨',json:'📋',csv:'📊',png:'🖼️',jpg:'🖼️',jpeg:'🖼️',gif:'🖼️',mp4:'🎬',mp3:'🎵'};
 function extIcon(n){ return extIcons[(n||'').split('.').pop().toLowerCase()]||'📁'; }
@@ -1124,6 +1209,7 @@ function renderGrid(list){
         </div>
         <div class="card-actions">
           <button class="action-btn" onclick="event.stopPropagation();toggleStar('${e.id}')" style="${e.starred?'color:var(--amber)':''}">${e.starred?'★':'☆'}</button>
+          <button class="action-btn" onclick="event.stopPropagation();downloadEntryZip('${e.id}')" title="Download ZIP"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></button>
           <button class="action-btn" onclick="event.stopPropagation();editEntry('${e.id}')"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button>
           <button class="action-btn" onclick="event.stopPropagation();confirmDelete('${e.id}')" style="color:var(--red)"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/></svg></button>
         </div>
@@ -1159,6 +1245,7 @@ function renderList(list){
       <div class="list-tags">${tagsHTML(e)}</div>
       <div class="list-actions">
         <button class="action-btn" onclick="event.stopPropagation();toggleStar('${e.id}')" style="${e.starred?'color:var(--amber)':''}">${e.starred?'★':'☆'}</button>
+        <button class="action-btn" onclick="event.stopPropagation();downloadEntryZip('${e.id}')" title="Download ZIP"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></button>
         <button class="action-btn" onclick="event.stopPropagation();editEntry('${e.id}')"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button>
         <button class="action-btn" onclick="event.stopPropagation();confirmDelete('${e.id}')" style="color:var(--red)"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/></svg></button>
       </div>
@@ -1187,6 +1274,73 @@ async function bulkDelete(){
 }
 
 // ═══════════════════════════════════════════════════════════
+//  DOWNLOAD AS ZIP (single entry, or a bulk selection)
+// ═══════════════════════════════════════════════════════════
+// Builds a folder inside a JSZip instance for one entry: metadata, code/info fields
+// as their own text files, and every Drive attachment fetched and embedded as-is.
+async function buildEntryZipFolder(zip, e, folderName) {
+  const folder = zip.folder(sanitizeFileName(folderName || e.title));
+  let meta = `Title: ${e.title}\n`;
+  if (e.url) meta += `URL: ${e.url}\n`;
+  meta += `Category: ${e.category}\nDate: ${e.date}\n`;
+  if (e.captured) meta += `\nCaptured Data / Description:\n${e.captured}\n`;
+  folder.file('info.txt', meta);
+
+  (e.codeFields||[]).forEach((f,i)=>{
+    if(!f.value) return;
+    folder.file(`${sanitizeFileName(f.label||('code_'+(i+1)))}${extForMode(f.mode)}`, f.value);
+  });
+  (e.infoFields||[]).forEach((f,i)=>{
+    if(!f.value) return;
+    folder.file(`${sanitizeFileName(f.label||('info_'+(i+1)))}.md`, f.value);
+  });
+
+  const files = (e.files||[]).filter(f=>f.driveId);
+  if (files.length) {
+    const attach = folder.folder('attachments');
+    for (const f of files) {
+      try { attach.file(f.name, await fetchDriveFileBlob(f.driveId)); }
+      catch(err) { attach.file(f.name + '.FAILED.txt', 'Could not download this file: '+err.message); }
+    }
+  }
+}
+
+async function downloadEntryZip(id) {
+  const e = entries.find(x=>x.id===id);
+  if (!e) { showToast('Entry not found','error'); return; }
+  showToast('Preparing download…','info');
+  try {
+    const zip = new JSZip();
+    await buildEntryZipFolder(zip, e, e.title);
+    const blob = await zip.generateAsync({type:'blob'});
+    triggerBlobDownload(blob, sanitizeFileName(e.title)+'.zip');
+    showToast('Download ready ✓','success');
+  } catch(err) { showToast('Download failed: '+err.message,'error'); }
+}
+
+async function bulkDownloadZip() {
+  const ids=[...bulkSelected];
+  if (!ids.length) { showToast('Nothing selected','warning'); return; }
+  showToast(`Preparing ${ids.length} ${ids.length===1?'entry':'entries'}…`,'info');
+  try {
+    const zip = new JSZip();
+    for (const id of ids) {
+      const e = entries.find(x=>x.id===id);
+      if (e) await buildEntryZipFolder(zip, e, e.title);
+    }
+    const blob = await zip.generateAsync({type:'blob'});
+    triggerBlobDownload(blob, `datavault_export_${Date.now()}.zip`);
+    showToast(`Downloaded ${ids.length} ${ids.length===1?'entry':'entries'} ✓`,'success');
+  } catch(err) { showToast('Download failed: '+err.message,'error'); }
+}
+
+async function downloadAttachedFile(driveId,name) {
+  showToast('Downloading '+name+'…','info');
+  try { triggerBlobDownload(await fetchDriveFileBlob(driveId), name); showToast('Downloaded ✓','success'); }
+  catch(err) { showToast('Download failed: '+err.message,'error'); }
+}
+
+// ═══════════════════════════════════════════════════════════
 //  DETAIL PANEL
 // ═══════════════════════════════════════════════════════════
 function openDetail(id){
@@ -1204,7 +1358,10 @@ function openDetail(id){
   (e.infoFields||[]).forEach(f=>{ if(!f.value)return; html+=`<div class="detail-section"><div class="detail-label">${esc(f.label)} <span class="detail-copy" onclick="copyText(${JSON.stringify(f.value)})">Copy</span></div><pre class="cm-s-dracula code-preview">${highlightToHTML(f.value,f.mode||'markdown')}</pre></div>`; });
   if((e.files||[]).length){
     html+=`<div class="detail-section"><div class="detail-label">Drive Files (${e.files.length})</div><div style="display:flex;flex-direction:column;gap:5px;">`;
-    e.files.forEach(f=>{ html+=`<div class="file-attach" ${f.driveId?`onclick="window.open('https://drive.google.com/file/d/${f.driveId}/view','_blank')"`:''}">${extIcon(f.name)} <span style="flex:1;overflow:hidden;text-overflow:ellipsis">${esc(f.name)}</span><span style="color:var(--text3);flex-shrink:0;margin-left:4px">${esc(f.size)}</span>${f.driveId?`<span style="color:var(--accent2);margin-left:6px;font-size:10px;flex-shrink:0">Open ↗</span>`:''}</div>`; });
+    e.files.forEach(f=>{
+      const dlBtn = f.driveId ? `<span onclick="event.stopPropagation();downloadAttachedFile('${f.driveId}','${esc(f.name)}')" style="color:var(--green);margin-left:8px;font-size:10px;flex-shrink:0;cursor:pointer">⬇ Download</span>` : '';
+      html+=`<div class="file-attach" ${f.driveId?`onclick="window.open('https://drive.google.com/file/d/${f.driveId}/view','_blank')"`:''}">${extIcon(f.name)} <span style="flex:1;overflow:hidden;text-overflow:ellipsis">${esc(f.name)}</span><span style="color:var(--text3);flex-shrink:0;margin-left:4px">${esc(f.size)}</span>${dlBtn}</div>`;
+    });
     html+=`</div></div>`;
   }
   html+=`<div class="detail-section"><div class="detail-label">Date</div><div style="font-size:12px;color:var(--text3)">${fmt(e.date)}</div></div>`;
@@ -1277,12 +1434,67 @@ function copyDynField(type,id){
   if(val) copyText(val);
   else showToast('Nothing to copy yet','warning');
 }
+
+// Loads a local text file (code, config, notes, etc.) directly into a code/info field.
+function uploadDynFieldFile(type,id){
+  const inputEl = document.createElement('input');
+  inputEl.type='file';
+  inputEl.accept='.js,.jsx,.mjs,.cjs,.ts,.tsx,.py,.html,.htm,.css,.json,.md,.markdown,.txt,.csv,.xml,.yml,.yaml,.sh,.env,text/*';
+  inputEl.onchange = () => {
+    const file = inputEl.files[0];
+    if(!file) return;
+    const reader = new FileReader();
+    reader.onload = () => {
+      const text = reader.result;
+      const guessed = guessModeFromFilename(file.name);
+      syncDynValue(type,id,text);
+      updateFieldMode(type,id,guessed);
+      const store = type==='code'?cmCodeInstances:cmInfoInstances;
+      const cm = store[id];
+      if(cm) cm.setValue(text);
+      const wrap = document.querySelector(`.dyn-field[data-id="${id}"]`);
+      if(wrap){
+        const labelInput = wrap.querySelector('.dyn-field-label-input');
+        const modeSel = wrap.querySelector('.dyn-mode-select');
+        if(labelInput && (!labelInput.value.trim() || /^(Code File|Info) \d+$/.test(labelInput.value.trim()))){
+          labelInput.value = file.name; updateFieldLabel(type,id,file.name);
+        }
+        if(modeSel) modeSel.value = guessed;
+      }
+      showToast('Loaded '+file.name,'success');
+    };
+    reader.onerror = () => showToast('Could not read file','error');
+    reader.readAsText(file);
+  };
+  inputEl.click();
+}
+
+// Toggles CodeMirror's built-in fullscreen and shows/hides a small floating
+// toolbar (Minimize / Copy / Save) while a field is maximized.
 function toggleFullscreenCM(type,id){
   const store = type==='code'?cmCodeInstances:cmInfoInstances;
   const cm = store[id];
   if(!cm) return;
-  cm.setOption('fullScreen', !cm.getOption('fullScreen'));
+  const goingFull = !cm.getOption('fullScreen');
+  cm.setOption('fullScreen', goingFull);
+  if(goingFull) showCMFullscreenToolbar(type,id,cm);
+  else removeCMFullscreenToolbar(cm);
   setTimeout(()=>cm.refresh(),60);
+}
+function showCMFullscreenToolbar(type,id,cm){
+  removeCMFullscreenToolbar(cm);
+  const bar=document.createElement('div');
+  bar.className='cm-fullscreen-toolbar';
+  bar.innerHTML=`
+    <button type="button" class="cm-fs-btn" title="Minimize" onclick="toggleFullscreenCM('${type}','${id}')">🗕 Minimize</button>
+    <button type="button" class="cm-fs-btn" title="Copy" onclick="copyDynField('${type}','${id}')">📋 Copy</button>
+    <button type="button" class="cm-fs-btn primary" title="Save entry" onclick="saveEntry()">💾 Save</button>`;
+  cm.getWrapperElement().appendChild(bar);
+}
+function removeCMFullscreenToolbar(cm){
+  const wrap=cm.getWrapperElement();
+  const bar=wrap.querySelector('.cm-fullscreen-toolbar');
+  if(bar) bar.remove();
 }
 
 function dynFieldRow(type,f){
@@ -1290,11 +1502,12 @@ function dynFieldRow(type,f){
     <div class="dyn-field-hdr">
       <input class="dyn-field-label-input" value="${esc(f.label)}" placeholder="Field name" oninput="updateFieldLabel('${type}','${f.id}',this.value)">
       <select class="dyn-mode-select" title="Syntax highlighting" onchange="updateFieldMode('${type}','${f.id}',this.value)">${modeOptionsHTML(f.mode||(type==='code'?'javascript':'markdown'))}</select>
+      <button type="button" class="dyn-icon-btn" title="Upload a file into this field" onclick="uploadDynFieldFile('${type}','${f.id}')">📤</button>
       <button type="button" class="dyn-icon-btn" title="Maximize / restore" onclick="toggleFullscreenCM('${type}','${f.id}')">⛶</button>
       <button type="button" class="dyn-icon-btn" title="Copy" onclick="copyDynField('${type}','${f.id}')">📋</button>
       <button type="button" class="dyn-icon-btn danger" title="Remove field" onclick="removeDynField('${type}','${f.id}')">🗑</button>
     </div>
-    <textarea class="cm-target" placeholder="${type==='code'?'// paste code…':'Key info, credentials, endpoints…'}">${esc(f.value)}</textarea>
+    <textarea class="cm-target" placeholder="${type==='code'?'// paste code, or click 📤 to upload a file…':'Key info, credentials, endpoints… or click 📤 to upload a file'}">${esc(f.value)}</textarea>
   </div>`;
 }
 
@@ -1308,14 +1521,14 @@ function initCMField(type,f,store){
     lineNumbers: true,
     lineWrapping: true,
     tabSize: 2,
-    extraKeys: { Esc: cmInst => { if(cmInst.getOption('fullScreen')) cmInst.setOption('fullScreen', false); } }
+    extraKeys: { Esc: cmInst => { if(cmInst.getOption('fullScreen')) toggleFullscreenCM(type,f.id); } }
   });
   cm.on('change', instance => syncDynValue(type, f.id, instance.getValue()));
   store[f.id] = cm;
   setTimeout(()=>cm.refresh(), 60);
 }
 function destroyCMStore(store){
-  Object.keys(store).forEach(id=>{ try{ store[id].toTextArea(); }catch(e){} delete store[id]; });
+  Object.keys(store).forEach(id=>{ try{ removeCMFullscreenToolbar(store[id]); store[id].toTextArea(); }catch(e){} delete store[id]; });
 }
 function destroyAllModalCM(){ destroyCMStore(cmCodeInstances); destroyCMStore(cmInfoInstances); }
 
@@ -1396,8 +1609,8 @@ async function saveEntry(){
       id:editingId||uid(),title,
       url:document.getElementById('f-url').value.trim(),
       captured:document.getElementById('f-captured').value.trim(),
-      codeFields: codeFields.map(f=>({id:f.id,label:(f.label||'').trim()||'Code File',value:f.value||''})),
-      infoFields: infoFields.map(f=>({id:f.id,label:(f.label||'').trim()||'Info',value:f.value||''})),
+      codeFields: codeFields.map(f=>({id:f.id,label:(f.label||'').trim()||'Code File',value:f.value||'',mode:f.mode||'javascript'})),
+      infoFields: infoFields.map(f=>({id:f.id,label:(f.label||'').trim()||'Info',value:f.value||'',mode:f.mode||'markdown'})),
       category:document.getElementById('f-category').value,
       date:dateVal?new Date(dateVal).toISOString():nowIso,
       files:pendingFiles.map(f=>({name:f.name,size:f.size,driveId:f.driveId||null,webViewLink:f.webViewLink||null,webContentLink:f.webContentLink||null})),
